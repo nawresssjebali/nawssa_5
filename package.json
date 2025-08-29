@@ -1,0 +1,103 @@
+{
+  "version": "1",
+  "projects": {
+    "projet-pfe-nawress-jebali": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/projet-pfe-nawress-jebali",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.app.json",
+            "assets": [
+              "src/assets",
+              "src/favicon.ico"
+            ],
+            "styles": [
+              "src/styles.css",
+              "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css",
+              "node_modules/ngx-toastr/toastr.css"
+            ],
+            "scripts": []
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "projet-pfe-nawress-jebali:build"
+          }
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^19.2.4",
+    "@angular/cli": "^19.2.11",
+    "@angular/compiler": "^19.2.3",
+    "@angular/compiler-cli": "^19.2.3",
+    "@angular/platform-server": "^19.2.3",
+    "@types/cors": "^2.8.17",
+    "@types/jasmine": "^5.1.7",
+    "@types/multer": "^1.4.12",
+    "@types/nodemailer": "^6.4.17",
+    "typescript": "^5.8.2",
+    "zone.js": "^0.15.0"
+  },
+  "dependencies": {
+    "@angular/animations": "^19.2.7",
+    "@angular/cdk": "^19.2.11",
+    "@angular/common": "^19.2.3",
+    "@angular/core": "^19.2.3",
+    "@angular/forms": "^19.2.3",
+    "@angular/material": "19.2.11",
+    "@angular/platform-browser": "^19.2.3",
+    "@angular/router": "^19.2.3",
+    "@angular/ssr": "^19.2.4",
+    "@fullcalendar/angular": "6",
+    "@fullcalendar/core": "6",
+    "@fullcalendar/daygrid": "6",
+    "@fullcalendar/interaction": "^6.1.17",
+    "@fullcalendar/timegrid": "^6.1.17",
+    "@nguniversal/express-engine": "^16.2.0",
+    "angular-calendar": "^0.31.1",
+    "axios": "^1.11.0",
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
+    "dotenv": "^16.4.7",
+    "express": "4.18.2",
+    "flask-cors": "^0.0.1",
+    "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.10.3",
+    "i": "^0.3.7",
+    "install": "^0.13.0",
+    "jspdf": "^3.0.1",
+    "mirrorfly-sdk": "^4.25.10",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.6.0",
+    "mongodb": "^6.18.0",
+    "mongoose": "^8.12.2",
+    "multer": "^1.4.5-lts.2",
+    "ngx-facebook": "^3.0.0-0",
+    "ngx-toastr": "^19.0.0",
+    "node-cron": "^4.1.0",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^7.0.2",
+    "path-to-regexp": "6.2.1",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "speakeasy": "^2.0.0",
+    "ultralytics": "^1.0.0",
+    "uuid": "^11.1.0"
+  }
+}
