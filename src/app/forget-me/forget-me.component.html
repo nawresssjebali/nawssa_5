@@ -1,0 +1,43 @@
+<body>
+    <div class="container">
+        <div class="section white">
+            <div class="right">
+                <h1>MedConnect</h1>
+            </div>
+            <div class="left">
+                <!-- Add ngSubmit to trigger the login method -->
+                <form class="form-horizontal" (ngSubmit)="onLoginClick()">
+                    <div class="input-group">
+                        <!-- Two-way binding with ngModel -->
+                        <input type="text" id="address" name="address" placeholder="Adresse" [(ngModel)]="loginData.email" required>
+                        <input type="password" id="password" name="password" placeholder="Mot de passe" [(ngModel)]="loginData.password" required>
+                        <button type="submit" class="connexion-button">Connexion</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="section red">
+            <div class="rectangle">
+                <div class="rectangle-title">FIND YOUR ACCOUNT</div>
+                <div class="title-underline"></div>
+                <p class="rectangle-text">
+                    Enter your email or phone number to search for your account.
+                </p>
+                <div class="input-rectangle">
+                    <input type="text" id="email" name="email" placeholder="Enter your email or phone number" required />
+                </div>
+                <div class="input-line"></div>
+                <div class="button-container">
+                    <!-- Click event for search -->
+                    <button class="search-button" (click)="onSearchEmail()">Search</button>
+                    <button class="cancel-button" (click)="goToForgetPassword()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section white_one">
+            <img src="../../assets/nawrassen.png" alt="hearts" class="heart-strip" />
+        </div>
+    </div>
+</body>

@@ -1,0 +1,74 @@
+<div class="bg-img">
+  <div class="content">
+    <header>Login Form</header>
+
+    <!-- Spinner: This will show when isLoading is true -->
+    <div *ngIf="isLoading" class="spinner-container">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Form for initial login -->
+    <form *ngIf="!show2FAVerification" (ngSubmit)="submitLoginForm()" #loginForm="ngForm">
+      <div class="field">
+        <span class="fa fa-user"></span>
+        <input type="text" 
+               [(ngModel)]="loginData.email" 
+               name="email" 
+               required 
+               placeholder="Email or Phone"
+               #email="ngModel">
+        <div *ngIf="email.invalid && email.touched" class="error">Email is required</div>
+      </div>
+      <div class="field space">
+        <span class="fa fa-lock"></span>
+        <input type="password" 
+               [(ngModel)]="loginData.password" 
+               name="password" 
+               [type]="passwordVisible ? 'text' : 'password'" 
+               class="pass-key" 
+               required 
+               placeholder="Password"
+               #password="ngModel">
+        <span class="show" (click)="togglePassword()">{{ passwordVisible ? 'HIDE' : 'SHOW' }}</span>
+        <div *ngIf="password.invalid && password.touched" class="error">Password is required</div>
+      </div>
+      <div class="pass">
+        <a (click)="goToForgetPassword()" style="cursor: pointer;">Forgot Password?</a>
+      </div>
+
+      <div class="field">
+        <input type="submit" value="LOGIN" [disabled]="loginForm.invalid || isLoading">
+      </div>
+    </form>
+
+    <!-- Form for 2FA verification -->
+    <form *ngIf="show2FAVerification" (ngSubmit)="verify2FAToken()" #twoFAForm="ngForm">
+      <div class="field">
+        <label for="twoFAToken">2FA Code</label>
+        <input type="text" 
+               id="twoFAToken"
+               name="twoFAToken" 
+               [(ngModel)]="twoFAToken"
+               maxlength="6"
+               required
+               placeholder="Enter 2FA code"
+               #twoFATokenField="ngModel"
+               autocomplete="one-time-code">
+        <div *ngIf="twoFATokenField.invalid && twoFATokenField.touched" class="error">2FA code is required</div>
+      </div>
+
+      <div class="field">
+        <input type="submit" value="Verify" [disabled]="twoFAForm.invalid || isLoading">
+      </div>
+    </form>
+
+    <div *ngIf="responseMessage" class="error" style="margin-top: 10px;">
+      {{ responseMessage }}
+    </div>
+
+    <div class="signup" *ngIf="!show2FAVerification">
+      Don't have an account?
+      <a (click)="goToRegister()">Signup Now</a>
+    </div>
+  </div>
+</div>

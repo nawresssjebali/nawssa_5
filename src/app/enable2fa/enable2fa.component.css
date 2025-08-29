@@ -1,0 +1,228 @@
+/* Base */
+/* Base layout */
+body {
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  background-color: #fafafa;
+  color: #3a3a3a;
+  margin: 0;
+  min-height: 100vh;
+
+  /* Flex column for vertical stacking */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center horizontally */
+  padding-top: 40px; /* some spacing from top */
+}
+
+/* Logo stays centered on its own line */
+.logo {
+  font-weight: 900;
+  font-size: 2.4rem;
+  color: #B22234;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  user-select: none;
+  text-align: center;
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Container directly below the logo, centered */
+.two-fa-container-vertical {
+  background: #ffffff;
+  max-width: 420px;
+  width: 90%;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem 2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Titles */
+.qr-section h3,
+.verify-section h3 {
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 0;
+  color: #A31F2D; /* Slightly darker red, elegant */
+  text-align: center;
+}
+
+/* QR Image */
+.qr-section img {
+  display: block;
+  margin: 0.8rem auto 0.6rem;
+  width: 180px;
+  height: 180px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* Text in QR Section */
+.qr-section p {
+  font-size: 0.9rem;
+  text-align: center;
+  color: #555;
+  margin: 0;
+}
+
+.qr-section strong {
+  color: #7B151F;
+  font-weight: 700;
+}
+
+/* Verify Section */
+.verify-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #4a4a4a;
+}
+
+/* Input */
+input {
+  padding: 0.5rem 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  transition: border-color 0.2s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #B22234;
+}
+
+/* Button */
+button {
+  margin-top: 0.8rem;
+  padding: 0.65rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background-color: #B22234;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  background-color: #891a22;
+}
+
+button:disabled {
+  background-color: #e4a1a5;
+  cursor: not-allowed;
+}
+
+/* Messages */
+.error-msg,
+.success-msg {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.error-msg {
+  color: #c62828;
+}
+
+.success-msg {
+  color: #2e7d32;
+}
+
+/* Loading text */
+p[ng-reflect-ng-if="isLoading"] {
+  font-style: italic;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Return button */
+.corner-return-button {
+  position: absolute;
+  bottom: 20px;
+  left: 20px; /* or right: 20px; if you want it top-right */
+  
+  /* Reuse the same style as your form buttons */
+  background-color: #B22234;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+}
+
+.corner-return-button:hover {
+  background-color: #a31f2d;
+}
+.danger-button {
+  margin-top: 1rem;
+  padding: 0.65rem 1rem;
+  background-color: #e74c3c;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.danger-button:hover {
+  background-color: #c0392b;
+}
+.active-section {
+  background: linear-gradient(to bottom right, #fdfdfd, #f5f5f5);
+  max-width: 440px;
+  width: 90%;
+  margin-top: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  border-left: 6px solid #2e7d32;
+  transition: all 0.3s ease;
+}
+
+.active-section h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #2e7d32;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.active-section button {
+  background-color: #e53935;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.active-section button:hover {
+  background-color: #c62828;
+  transform: translateY(-1px);
+}

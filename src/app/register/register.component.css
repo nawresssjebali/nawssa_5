@@ -1,0 +1,163 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+}
+
+/* Background Gradient */
+.nounou {
+    background: linear-gradient(to bottom, #B22234, #8B1C2F);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Body Styling */
+body {
+    background: url('../../assets/test.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Main Container */
+.container {
+    position: relative;
+    max-width: 600px; /* reduced width */
+    width: 100%;
+    padding: 15px 20px; /* reduced padding */
+    background: linear-gradient(135deg, #F8D7DA, #F0E3E3);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* slightly lighter shadow */
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    margin: 10px 15px; /* reduced margins */
+}
+
+/* Header Styling */
+.container header {
+    font-size: 22px; /* slightly smaller */
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px; /* reduced margin */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    text-align: center;
+}
+
+.container header::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    transform: translateX(-50%);
+    height: 2px;
+    width: 60px;
+    background-color: #B22234;
+    border-radius: 6px;
+}
+
+/* Form Fields */
+.input-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px; /* reduced space */
+}
+
+.input-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px; /* tighter under label */
+    text-align: left;
+}
+
+.input-field input,
+.input-field select {
+    padding: 8px 10px; /* smaller padding */
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    font-size: 13px;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.input-field input:focus,
+.input-field select:focus {
+    border-color: #B22234;
+    box-shadow: 0 0 6px rgba(178, 34, 52, 0.2);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+/* Password Field */
+.input-field.password input {
+    padding: 8px 10px;
+}
+
+/* Error Message */
+.error {
+    color: #B22234;
+    font-size: 11px;
+    margin-top: 4px;
+    padding-left: 8px;
+    font-weight: 500;
+}
+
+/* Submit Button */
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #B22234;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background-color: #9B1F2E;
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+/* Button Container */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px; /* reduced margin-top */
+}
+
+.button-container button {
+    width: 48%;
+}
+.field-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.field-row .input-field {
+    flex: 1;
+}
+
+/* Stack on small screens */
+@media (max-width: 600px) {
+    .field-row {
+        flex-direction: column;
+    }
+}

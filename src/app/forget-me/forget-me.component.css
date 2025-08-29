@@ -1,0 +1,212 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    width: 100%;
+}
+
+.container {
+    display: flex; /* Enables flexbox layout */
+    flex-direction: column; /* Stacks the sections vertically */
+    width: 100vw; /* Full width of the screen */
+    height: 100vh; /* Full height of the screen */
+}
+
+.section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    width: 100%; /* Full width of each section */
+}
+
+.white {
+    background-color: white;
+    color: black;
+    height: 75px;
+    /* Optional: Just to see section divisions */
+}
+
+.red {
+    background: linear-gradient(to bottom, #B22234, #8B1C2F);
+    color: white;
+    height: 625px;
+}
+
+.white_one {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    background-color: white;
+}
+
+.heart-strip {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+
+
+.left {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 50%;
+    margin-left: 10px;
+    /* This section will now appear on the left side */
+}
+
+.right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    /* This section will now appear on the right side */
+}
+
+.form-horizontal {
+    display: flex;
+    justify-content: flex-start; /* Align the inputs and button in a row */
+    align-items: center; /* Vertically center the inputs and button */
+    gap: 20px; /* Space between the elements */
+}
+
+.input-group input {
+    padding: 10px;
+    margin: 15px;
+    width: 200px; /* Adjust width of the inputs */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button.connexion-button {
+    padding: 10px 20px;
+    background-color: #B22234;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.connexion-button:hover {
+    background-color: #2691d9;
+}
+
+.right h1 {
+    font-size: 40px;
+    font-weight: 700;
+    color: #B22234;
+    letter-spacing: 2px;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8),
+                 0 4px 10px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    transition: transform 0.3s ease;
+    margin: 0; /* remove unnecessary margin if not needed */
+    cursor: default;
+    margin-right: 390px;
+  }
+  
+  .right h1:hover {
+    transform: scale(1.05);
+  }
+  
+.rectangle {
+    background-color: white;
+    border-radius: 15px; /* Rounded corners */
+    width: 40%; /* Adjust width */
+    height: auto; /* Adjust height dynamically based on content */
+    display: flex;
+    flex-direction: column; /* Stacks items vertically */
+    align-items: flex-start; /* Aligns content to the left */
+    justify-content: flex-start; /* Aligns content to the top */
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Optional: Adds shadow for better visibility */
+}
+
+.rectangle-title {
+    font-size: 22px; /* Adjust size as needed */
+    font-weight: bold; /* Makes text bold */
+    color: black; /* Sets text color to black */
+    text-transform: uppercase; /* Makes text uppercase */
+    align-self: flex-start; /* Moves text to the right */
+    margin-bottom: 10px; /* Adds space below title */
+}
+
+.title-underline {
+    width: 100%; /* Full width of the rectangle */
+    height: 2px; /* Thickness of the line */
+    background-color: black; /* Line color */
+    margin-bottom: 10px; /* Space between line and text */
+}
+
+.rectangle-text {
+    font-size: 16px;
+    color: black;
+    width: 100%; /* Ensures text spans full width */
+}
+.input-rectangle {
+    background-color: white;
+    border-radius: 15px;
+    width: 100%; /* Adjust width to match the previous rectangle */
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Optional: Adds shadow for better visibility */
+    margin-top: 20px; /* Space between the two rectangles */
+
+}
+.input-rectangle input {
+    width: 100%; /* Makes the input field take up full width */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.input-line {
+    width: 100%; /* Full width of the rectangle */
+    height: 2px; /* Thickness of the line */
+    background-color: black; /* Line color */
+    margin-bottom: 10px;/* Adds space between the input and the line */
+}
+/* General Button Styles */
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+}
+
+/* Search Button */
+.search-button {
+    background-color: #B22234;
+    color: white;
+}
+
+.search-button:hover {
+    background-color: #2691d9;
+}
+
+/* Cancel Button */
+.cancel-button {
+    background-color: #ccc;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #2691d9;
+}
+
+/* Button Container Styles */
+.button-container {
+    display: flex;
+    justify-content: space-between;  /* Ensures space between buttons */
+    gap: 10px;  /* Optional space between buttons */
+}

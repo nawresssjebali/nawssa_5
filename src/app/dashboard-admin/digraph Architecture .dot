@@ -1,0 +1,93 @@
+digraph Architecture {
+    rankdir=LR;
+    splines=ortho;
+    nodesep=0.6;
+    ranksep=1.0;
+    fontname="Arial";
+
+    node [shape=rectangle style=filled fontname="Arial" fontsize=10];
+
+    // --- Layers ---
+    subgraph cluster_client {
+        label="Client Layer";
+        style=filled;
+        color=lightgrey;
+        Client [label="Browser-type Client", shape=rectangle, fillcolor=white];
+    }
+
+    subgraph cluster_presentation {
+        label="Presentation Layer";
+        style=filled;
+        color=lightyellow;
+        Portal [label="Portal Server", fillcolor=white];
+        CommExpress [label="Communications Express", fillcolor=white];
+        WebServer [label="Web Server", fillcolor=white];
+    }
+
+    subgraph cluster_business {
+        label="Business Logic Layer";
+        style=filled;
+        color=lightblue;
+        Auth [label="Authentication & Security Service", fillcolor=white];
+        UserMgmt [label="User & Account Management Service", fillcolor=white];
+        Messaging [label="Messaging & Communication Service", fillcolor=white];
+        CaseMgmt [label="Case & ECG Management Service", fillcolor=white];
+        ECGInterp [label="ECG Interpretation Service", fillcolor=white];
+        Reporting [label="Reporting & Feedback Service", fillcolor=white];
+        Chatbot [label="Chatbot", fillcolor=white];
+        Reminder [label="Notification & Reminder Service", fillcolor=white];
+    }
+
+    subgraph cluster_data {
+        label="Data Layer";
+        style=filled;
+        color=lightcyan;
+        SecurityDB [label="Security DB", fillcolor=white, shape=cylinder];
+        UserDB [label="User DB", fillcolor=white, shape=cylinder];
+        MsgDB [label="Messages DB", fillcolor=white, shape=cylinder];
+        ECGDB [label="ECG DB", fillcolor=white, shape=cylinder];
+        CasesDB [label="Cases DB", fillcolor=white, shape=cylinder];
+        ReportDB [label="Report DB", fillcolor=white, shape=cylinder];
+        FAQDB [label="FAQ DB", fillcolor=white, shape=cylinder];
+        ChatbotDB [label="Chatbot Messages DB", fillcolor=white, shape=cylinder];
+        NotifDB [label="Notifications DB", fillcolor=white, shape=cylinder];
+    }
+
+    subgraph cluster_services {
+        label="Transversal Services";
+        style=filled;
+        color=mistyrose;
+        SecAuth [label="Security & Authentication", fillcolor=white];
+        Persistence [label="Persistence / ORM", fillcolor=white];
+        Integration [label="Integration with External Services", fillcolor=white];
+        Logging [label="Logging & Monitoring", fillcolor=white];
+        Expiration [label="Expiration Management", fillcolor=white];
+    }
+
+    // --- Connections ---
+    Client -> Portal;
+    Client -> CommExpress;
+    Client -> WebServer;
+
+    Portal -> {Auth UserMgmt Messaging CaseMgmt ECGInterp Reporting Chatbot Reminder};
+    CommExpress -> Messaging;
+    WebServer -> {Chatbot Reminder};
+
+    Auth -> SecurityDB;
+    UserMgmt -> UserDB;
+    Messaging -> MsgDB;
+    CaseMgmt -> CasesDB;
+    ECGInterp -> ECGDB;
+    Reporting -> ReportDB;
+    Chatbot -> ChatbotDB;
+    Reminder -> NotifDB;
+
+    Reporting -> FAQDB;
+
+    // Transversal applies to all business logic services
+    {Auth UserMgmt Messaging CaseMgmt ECGInterp Reporting Chatbot Reminder} -> SecAuth [style=dashed];
+    {Auth UserMgmt Messaging CaseMgmt ECGInterp Reporting Chatbot Reminder} -> Persistence [style=dashed];
+    {Auth UserMgmt Messaging CaseMgmt ECGInterp Reporting Chatbot Reminder} -> Integration [style=dashed];
+    {Auth UserMgmt Messaging CaseMgmt ECGInterp Reporting Chatbot Reminder} -> Logging [style=dashed];
+    {Auth UserMgmt Messaging CaseMgmt ECGInterp Reporting Chatbot Reminder} -> Expiration [style=dashed];
+}

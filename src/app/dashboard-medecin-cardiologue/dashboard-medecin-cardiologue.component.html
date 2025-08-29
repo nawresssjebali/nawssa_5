@@ -1,0 +1,1213 @@
+<div class="dashboard">
+  <!-- Sidebar -->
+  <div class="sidebar">
+  <h2>Dashboard</h2>
+  
+
+    <h3>📤 ECG Actions</h3>
+    <div class="nav-link" (click)="onSendToDoctor()">Generalist Referrals</div>
+    <div class="nav-link" (click)="onSendToAllDoctor()">vote on ecg</div>
+    <div class="nav-link" (click)="onSendToAllDoctor_case()">vote on case</div>
+    <div class="nav-link" (click)="onintrprt()">AI ECG Interpretation</div>
+     <h3>📅 Consultations</h3>
+    <div class="nav-link" (click)="onscheduled()">Scheduled Events</div>
+      <h3>📂 Records</h3>
+   
+    <div class="nav-link" (click)="onSeeTreatedReports()">My Reports</div>
+  <h3>🔧 Support</h3>
+     <div class="nav-link"  (click)="onFAQ()">FAQ</div>
+    <div class="nav-link"  (click)="onreportseccurity()">Report Security Issues</div>
+    <div class="nav-link" (click)="onShowChatbot()">Chat with Medical Bot</div>
+       
+
+  </div>
+   
+
+
+  <div class="dashboard-wrapper"> 
+  <div *ngIf="callType === 'video'" class="video-container">
+    <div class="video-call-controls" *ngIf="callStatus === 'connected'">
+    
+
+    <div class="control-buttons">
+      <button class="reject-btn" (click)="hangUp()">📴 </button>
+      <button *ngIf="!isMuted" (click)="muteMic()">🔇 </button>
+      <button *ngIf="isMuted" (click)="unmuteMic()">🎤 </button>
+      <button *ngIf="!isScreenSharing" (click)="startScreenShare()">🖥️ </button>
+      <button *ngIf="isScreenSharing" (click)="stopScreenShare()">✖️</button>
+    </div>
+  </div>
+  <!-- Local video (your camera preview) -->
+  <video #localVideo id="localVideo" autoplay muted class="local-video"></video>
+
+  <!-- Remote video (other person's camera & audio) -->
+  <video #remoteVideo autoplay class="remote-video"></video>
+</div>
+
+<!-- Remote audio element for voice-only calls -->
+<audio #remoteAudio autoplay></audio>
+
+<div *ngIf="activeSection === 'AI'" class="main_nawress">
+  <div class="upload-container">
+    <h2 class="title">ECG Analysis</h2>
+
+    <!-- File Upload Section -->
+    <div class="upload-card">
+      <div class="upload-card-content">
+        <label for="ecgFile" class="upload-field">
+          Upload ECG File
+        </label>
+        <input type="file" id="ecgFile" (change)="onFileSelected2($event)" />
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+   <div class="submit-section">
+  <button 
+    (click)="onUpload2()" 
+    [ngClass]="{'submit-btn_9': true, 'disabled': !selectedFile2}" 
+    [attr.disabled]="!selectedFile2 ? true : null">
+    Submit
+  </button>
+</div>
+
+
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="loading-indicator">
+      <div class="spinner"></div>
+      <span class="loading-text">Processing...</span>
+    </div>
+
+    <!-- Prediction Result Display -->
+    <div *ngIf="result1" class="result-box">
+      <div class="result-text">
+        <span>{{ result1 }}</span>
+      </div>
+
+      <!-- Grad-CAM Section -->
+      <div *ngIf="gradcamVisible" class="gradcam-section">
+        <h3>Model's Decision Explanation (Grad-CAM):</h3>
+        <a [href]="'http://localhost:3000' + gradcamImage" target="_blank" class="gradcam-link">
+          Open Grad-CAM in New Window
+        </a>
+      </div>
+
+      <!-- "See Why" Button to Show Grad-CAM -->
+      <div *ngIf="!gradcamVisible && !loading">
+        <button (click)="showGradCam()" class="see-why-btn">
+          See Why
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div *ngIf="activeSection === 'FAQ'" class="faq-container">
+  <h2>Frequently Asked Questions</h2>
+  <div *ngFor="let faq of faqs; let i = index" class="faq-item" [class.open]="faq.open" (click)="toggleFaq(i)">
+    <h3>{{ faq.question }}</h3>
+    <p *ngIf="faq.open">{{ faq.answer }}</p>
+  </div>
+
+  <div class="faq-form">
+    <h3>Didn't find your question?</h3>
+    <form (ngSubmit)="submitQuestion()" *ngIf="!submitted">
+      <textarea [(ngModel)]="newQuestion" name="question" placeholder="Ask your question here..." required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+    <div *ngIf="submitted" class="success-message_1">
+      Thank you! We'll get back to you soon.
+    </div>
+  </div>
+</div>
+    <div *ngIf="activeSection === 'securityReport'" class="security-report-container">
+      <h2>Report a Security Issue</h2>
+      <p>If you suspect a security vulnerability, please fill out this form. We'll respond as soon as possible.</p>
+    
+      <form [formGroup]="securityReportForm" (ngSubmit)="onSubmit_1()" class="form-container">
+    
+        <!-- Left Section -->
+        <div class="form-section left-section">
+          <label for="name">Your Name (optional)</label>
+          <input id="name" formControlName="name" type="text" placeholder="Your name" />
+    
+          <label for="email">Your Email <span style="color:red">*</span></label>
+          <input id="email" formControlName="email" type="email" placeholder="you@example.com" />
+          <div *ngIf="securityReportForm.get('email')?.touched && securityReportForm.get('email')?.invalid" style="color:red">
+            <small *ngIf="securityReportForm.get('email')?.errors?.['required']">Email is required.</small>
+            <small *ngIf="securityReportForm.get('email')?.errors?.['email']">Invalid email format.</small>
+          </div>
+    
+          <label for="description">Issue Description <span style="color:red">*</span></label>
+          <textarea id="description" formControlName="description" placeholder="Describe the security issue in detail"></textarea>
+          <div *ngIf="securityReportForm.get('description')?.touched && securityReportForm.get('description')?.invalid" style="color:red">
+            <small *ngIf="securityReportForm.get('description')?.errors?.['required']">Description is required.</small>
+          </div>
+    
+          <label for="steps">Steps to Reproduce (optional)</label>
+          <textarea id="steps" formControlName="steps" placeholder="Step-by-step instructions to reproduce the issue"></textarea>
+    
+          <label for="severity">Severity Level</label>
+          <select id="severity" formControlName="severity">
+            <option value="" disabled selected>Select severity</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+    
+        <!-- Right Section -->
+     <div class="form-section right-section">
+  <h3>Recommended Actions You've Taken</h3>
+  <div formGroupName="actions" class="security-actions-form">
+
+    <div class="action-item">
+      <label><input type="checkbox" formControlName="changePassword" /> Changed password</label>
+      <button type="button" (click)="goTo('change-password')">Change</button>
+    </div>
+
+    <div class="action-item">
+      <label><input type="checkbox" formControlName="enable2FA" /> Enabled two-factor authentication (2FA)</label>
+      <button type="button" (click)="goTo('enable-2fa')">Enable</button>
+    </div>
+
+    <!-- 🔽 Replace the removed items with an image -->
+   
+  </div>
+
+  <br />
+  <button type="submit" [disabled]="securityReportForm.invalid">Submit Report</button>
+</div>
+
+</form>
+</div>
+
+<div *ngIf="activeSection === 'submissionSuccess'" class="success-message_1">
+  <h3>✅ Thank you for your report!</h3>
+  <p>We appreciate you helping us keep our system secure. Our team will review your submission as soon as possible.</p>
+</div>
+
+    <section class="treated-reports-section" *ngIf="activeSection === 'treatedReports'">
+      <h2>My Reports</h2>
+    
+      <!-- Show table only when no selected response -->
+      <ng-container *ngIf="!selectedReportResponse; else responseBlock">
+        <table *ngIf="allReports.length > 0; else noReports">
+          <thead>
+            <tr>
+              <th>Reason</th>
+              <th>Treated</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let report of allReports">
+              <td>{{ report.reason }}</td>
+              <td>{{ report.treated ? 'Yes' : 'No' }}</td>
+              <td>
+                <button [disabled]="!report.treated" (click)="viewResponse(report)">See Treatment</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    
+      <ng-template #responseBlock>
+        <div class="response-modal">
+          <h3>Response</h3>
+          <p>{{ selectedReportResponse }}</p>
+          <button (click)="closeResponse()">Back to Reports</button>
+        </div>
+      </ng-template>
+    
+      <ng-template #noReports>
+        <p>No reports found.</p>
+      </ng-template>
+    </section>
+<div class="bot-container" *ngIf="activeSection === 'bot'">
+  <div class="chat-container">
+    <div class="chat-header">
+      🤖 Chat with Medical Chatbot
+    </div>
+
+    <div class="chat-messages" #chatBox>
+      <!-- No conversation yet -->
+      <div *ngIf="chatbotConversation.length === 0" class="no-messages">
+        No messages yet. Start the conversation!
+      </div>
+
+      <!-- Conversation -->
+      <div *ngFor="let msg of chatbotConversation" 
+           class="message-bubble" 
+           [ngClass]="{ 'sent': msg.senderId === user?.id, 'received': msg.senderId !== user?.id }">
+
+        <!-- Bot message -->
+        <div *ngIf="msg.senderId !== user?.id" class="bot-message-content">
+          <div class="message-text" [innerHTML]="msg.content"></div>
+
+          <div *ngIf="msg.options?.length" class="options">
+            <button 
+              *ngFor="let option of msg.options" 
+              (click)="handleUserSelection(option.value)">
+              {{ option.label }}
+            </button>
+          </div>
+
+          <button class="copy-btn" (click)="copyToClipboard(msg.content)">📋 Copy</button>
+
+          <button *ngIf="msg.origin" class="origin-btn" (click)="msg.showOrigin = !msg.showOrigin">
+            {{ msg.showOrigin ? 'Hide Source' : 'Show Source' }}
+          </button>
+
+          <div *ngIf="msg.showOrigin" class="origin-text" [innerHTML]="msg.origin"></div>
+        </div>
+
+        <!-- User message -->
+        <div *ngIf="msg.senderId === user?.id" class="message-text" [innerHTML]="msg.content"></div>
+
+        <small class="message-time">{{ msg.timestamp | date:'shortTime' }}</small>
+      </div>
+    </div>
+
+    <!-- 📄 Download Case Report Button -->
+    <button *ngIf="hasCaseReport" (click)="generateCasePDF()">📄 Download Case Report</button>
+
+    <!-- Question Input -->
+    <form *ngIf="showQuestionInput" (ngSubmit)="sendQuestion()" class="chat-input">
+      <input 
+        [(ngModel)]="question" 
+        name="question" 
+        placeholder="Type your medical question..." 
+        required 
+        [disabled]="isTyping" 
+      />
+      <div class="button-group">
+        <button type="button" (click)="startListening()">
+          {{ isListening ? '🛑 Stop' : 'Speak' }}
+        </button>
+        <button type="submit" [disabled]="isTyping">Send </button>
+      </div>
+    </form>
+
+    <!-- Clinical Case Input -->
+    <form *ngIf="showCaseInput" (ngSubmit)="sendCase()" class="chat-input">
+      <input
+        [(ngModel)]="clinicalCase"
+        name="case"
+        placeholder="Your answer..."
+        required
+        [disabled]="isTyping"
+      />
+      <div class="button-group">
+        <button type="submit" [disabled]="isTyping">Next</button>
+        <button type="button" (click)="cancelCase()" [disabled]="isTyping">Cancel</button>
+        <button type="button" (click)="startListening()">
+          {{ isListening ? '🛑 Stop' : 'Speak' }}
+        </button>
+      </div>
+    </form>
+
+    <!-- Typing Indicator -->
+    <div *ngIf="isTyping" class="typing-indicator">
+      <em>Medical Chatbot is typing...</em>
+    </div>
+  </div>
+</div>
+
+
+
+  <div class="events-container" *ngIf="activeSection === 'call'">
+  <h2>📅 My Scheduled Calls</h2>
+
+  <div *ngIf="events.length === 0">
+    <p>No scheduled calls yet.</p>
+  </div>
+
+  <div class="event-list">
+    <div *ngFor="let event of events" class="event-card">
+      <h3>{{ event.title }}</h3>
+      <p><strong>Date:</strong> {{ event.date | date: 'yyyy-MM-dd' }}</p>
+      <p><strong>Time:</strong> {{ event.date | date: 'shortTime' }}</p>
+<div *ngIf="event && event.participantNames && event.participantNames.length >= 2">
+  <strong>Between:</strong> {{ event.participantNames[0] }} and {{ event.participantNames[1] }}
+</div>
+
+
+
+      <div class="event-actions">
+  <ng-container *ngIf="event.cancelled !== 'yes'; else cancelledLabel">
+   <!-- Join Voice Call -->
+<button *ngIf="event.doctorId" (click)="makeCall(event.doctorId, 'voice')">
+  📞 Join Voice Call
+</button>
+<button *ngIf="event.doctorId" (click)="makeCall(event.doctorId, 'video')">
+  📹 Join Video Call
+</button>
+
+
+
+    <button (click)="cancelEvent(event)">❌ Cancel Event</button>
+  </ng-container>
+
+  <ng-template #cancelledLabel>
+  <p class="cancelled-text">❌ This event has been cancelled</p>
+  <button (click)="deleteEvent(event)">🗑️ Delete Event</button>
+</ng-template>
+
+</div>
+    </div>
+  </div>
+</div>
+    
+ <div *ngIf="activeSection === 'respond-broadcastcase'">
+  <div *ngIf="cases_1.length=== 0" class="no-ecg-message">
+  No Cases received 
+</div>
+  <div *ngIf="cases_1.length > 0" class="cases-detail-list" style="margin-top: 30px;">
+    <h2>Case Details</h2>
+
+    <div *ngFor="let caseItem of cases_1" class="case-summary" style="margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 15px;">
+      <!-- Basic Info -->
+      <div>
+        <strong>Age:</strong> {{ caseItem.patientAge }} |
+        <strong>Sex:</strong> {{ caseItem.patientSex }} |
+        <strong>Consultation Motive:</strong> {{ caseItem.consultationMotive }}
+      </div>
+
+      <!-- Toggle Button -->
+      <button (click)="toggleFullInfo(caseItem._id)" style="margin: 8px 0;">
+        {{ isFullInfoShown(caseItem._id) ? 'Hide Full Information' : 'See Full Information' }}
+      </button>
+
+      <!-- Full Info Section -->
+      <div *ngIf="isFullInfoShown(caseItem._id)" class="full-case-info" style="margin-top: 10px;">
+        <!-- Full case details -->
+        <div><strong>Symptoms:</strong> {{ caseItem.symptoms }}</div>
+        <div><strong>Medical History:</strong> {{ caseItem.medicalHistory }}</div>
+        <div><strong>Allergies:</strong> {{ caseItem.allergies }}</div>
+        <div><strong>Current Medications:</strong> {{ caseItem.currentMedications }}</div>
+        <div><strong>Blood Pressure:</strong> {{ caseItem.bloodPressure }}</div>
+        <div><strong>Heart Rate:</strong> {{ caseItem.heartRate }}</div>
+        <div><strong>Temperature:</strong> {{ caseItem.temperature }} °C</div>
+        <div><strong>Oxygen Saturation:</strong> {{ caseItem.oxygenSaturation }}%</div>
+
+<div *ngIf="caseItem.broadcastECGFile" style="margin-top: 10px;">
+  <h4>ECG File</h4>
+  <a [href]="'http://localhost:5000/broadcastcase/' + caseItem.broadcastECGFile" target="_blank" rel="noopener">
+    View ECG File
+  </a>
+</div>
+
+        <!-- Voting Section -->
+        <div class="choices-section" *ngIf="caseItem.answered === 'no'">
+          <h4>Vote on the following choices:</h4>
+          <ul>
+            <li *ngFor="let choice of caseItem.diagnosesChoices">
+  <label>
+    <input
+      type="radio"
+      name="vote-{{ caseItem._id }}"
+      [value]="choice"
+      [(ngModel)]="selectedVotes[caseItem._id]"
+      [disabled]="hasVoted_1(caseItem) || isVotingClosed(caseItem)"
+    />
+    {{ choice }} ({{ countVotes_1(caseItem, choice) }} votes)
+  </label>
+</li>
+
+          </ul>
+
+          <div *ngIf="hasVoted_1(caseItem)" class="your-vote">
+            <p><strong>Your Vote:</strong> {{ getUserVote_1(caseItem) }}</p>
+          </div>
+
+          <button
+            *ngIf="!hasVoted_1(caseItem)"
+            (click)="submitVote_1(caseItem)"
+            [disabled]="!selectedVotes[caseItem._id] || isVotingClosed(caseItem)"
+          >
+            Submit Vote
+          </button>
+        </div>
+
+        <!-- Final answer shown if answered = 'yes' -->
+       <div *ngIf="caseItem.answered === 'yes'" class="final-answer" style="margin-top: 20px;">
+  <p style="color: green; font-weight: bold;">✔ Voting has ended. Final answer determined.</p>
+  <p><strong>Final Diagnosis:</strong> {{ getAnswerText(caseItem) }}</p>
+</div>
+
+
+        <!-- Expired voting message -->
+        <div *ngIf="caseItem.answered === 'expired'" class="expired-message" style="margin-top: 20px;">
+          <p style="margin-top: 20px; color: red; font-weight: bold;"> ⚠ Voting period expired. No answer was submitted.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="activeSection === 'respond-broadcastecg'" class="respond-ecg-container">
+
+  <!-- Emergency Level Filter -->
+   <!-- Filter Dropdown -->
+  <div class="filter-section">
+    <label for="emergencyFilter">Filter by Emergency Level:</label>
+    <select id="emergencyFilter" [(ngModel)]="selectedEmergencyLevel">
+      <option value="">All</option>
+      <option value="normal">Normal</option>
+      <option value="urgent">Urgent</option>
+      <option value="critical">Critical</option>
+    </select>
+  </div>
+
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading_1" class="loading">Loading ECGs...</div>
+
+  <!-- No ECGs Message -->
+  <div *ngIf="filteredEcgs.length === 0 && !isLoading_1" class="no-ecg-message">
+    No ECGs received
+  </div>
+
+  <!-- ECG Cards List -->
+  <div *ngIf="!isLoading_1" class="ecg-list">
+    <div *ngFor="let ecg of filteredEcgs" class="ecg-card">
+
+      <!-- ECG Info -->
+      <div class="ecg-header">
+        <p><strong>Emergency Level:</strong> {{ ecg.emergencyLevel }}</p>
+        <p><strong>Uploaded:</strong> {{ ecg.uploadDate | date: 'short' }}</p>
+      </div>
+
+      <!-- ECG File Link -->
+     <a [href]="'http://localhost:5000/Broadcast_ECGS/' + ecg.filePath" target="_blank" rel="noopener">
+  View ECG File
+</a>
+
+       
+
+      <!-- Voting Section -->
+      <div class="choices-section" *ngIf="ecg.answered === 'no'">
+        <h4>Vote on the following choices:</h4>
+        <ul>
+          <li *ngFor="let choice of ecg.choices">
+            <label>
+              <input
+                type="radio"
+                name="vote-{{ ecg._id }}"
+                [value]="choice"
+                [(ngModel)]="selectedVotes[ecg._id]"
+                [disabled]="hasVoted(ecg) || isVotingClosed(ecg)"
+              />
+              {{ choice }} ({{ countVotes(ecg, choice) }} votes)
+            </label>
+          </li>
+        </ul>
+
+        <!-- Your Vote Display -->
+        <div *ngIf="hasVoted(ecg)" class="your-vote">
+          <p><strong>Your Vote:</strong> {{ getUserVote(ecg) }}</p>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          *ngIf="!hasVoted(ecg)"
+          (click)="submitVote(ecg)"
+          [disabled]="!selectedVotes[ecg._id] || isVotingClosed(ecg)"
+        >
+          Submit Vote
+        </button>
+      </div>
+
+      <!-- Final Answer -->
+      <div *ngIf="ecg.answered === 'yes'" class="final-answer">
+        <p><strong>Final Answer(s):</strong> {{ getAnswerText(ecg) }}</p>
+      </div>
+
+      <!-- Expired Message -->
+      <div *ngIf="ecg.answered === 'expired'" class="expired-message">
+        <p style="margin-top: 20px; color: red; font-weight: bold;"><strong> ⚠ Voting period expired. No answer was submitted.</strong></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<div *ngIf="activeSection === 'Cases'">
+
+  <div *ngIf="cases.length === 0" class="no-ecg-message">
+    No Cases received
+  </div>
+
+  <div *ngIf="cases.length > 0" class="cases-detail-list" style="margin-top: 30px;">
+    <h2>Case Details</h2>
+
+    <div
+      *ngFor="let caseItem of cases"
+      class="case-summary"
+      style="margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 15px;"
+    >
+      <!-- Basic Info -->
+      <div>
+        <strong>Age:</strong> {{ caseItem.patientAge }} |
+        <strong>Sex:</strong> {{ caseItem.patientSex }} |
+        <strong>Consultation Motive:</strong> {{ caseItem.consultationMotive }}
+      </div>
+
+      <!-- Toggle Button -->
+      <button (click)="toggleFullInfo(caseItem._id)" style="margin: 8px 0;">
+        {{ isFullInfoShown(caseItem._id) ? 'Hide Full Information' : 'See Full Information' }}
+      </button>
+
+      <!-- Full Info Section -->
+      <div *ngIf="isFullInfoShown(caseItem._id)" class="full-case-info" style="margin-top: 10px;">
+        <div><strong>Symptoms:</strong> {{ caseItem.symptoms }}</div>
+        <div><strong>Medical History:</strong> {{ caseItem.medicalHistory }}</div>
+        <div><strong>Allergies:</strong> {{ caseItem.allergies }}</div>
+        <div><strong>Current Medications:</strong> {{ caseItem.currentMedications }}</div>
+        <div><strong>Blood Pressure:</strong> {{ caseItem.bloodPressure }}</div>
+        <div><strong>Heart Rate:</strong> {{ caseItem.heartRate }}</div>
+        <div><strong>Temperature:</strong> {{ caseItem.temperature }} °C</div>
+        <div><strong>Oxygen Saturation:</strong> {{ caseItem.oxygenSaturation }}%</div>
+
+        <!-- ECG File Link -->
+        <div *ngIf="caseItem.selectedECGFile" style="margin-top: 10px;">
+          <h4>ECG File</h4>
+          <a
+            [href]="'http://localhost:5000/ecg-files_1/' + caseItem.selectedECGFile"
+            target="_blank"
+            rel="noopener"
+          >
+            View ECG File
+          </a>
+        </div>
+
+        <!-- Response Status -->
+        <!-- Already responded -->
+        <div *ngIf="caseItem.answered === 'yes'" style="margin-top: 20px;">
+          <p style="color: green; font-weight: bold;">✔ You have already responded to this case.</p>
+
+          <div *ngIf="caseItem.answer">
+            <p><strong>Your Diagnosis:</strong> {{ caseItem.answer }}</p>
+          </div>
+
+          <div *ngIf="caseItem.responseFileName">
+            <p><strong>Attached File:</strong>
+              <a [href]="'http://localhost:5000/respond_file/' + caseItem.responseFileName" target="_blank">
+                View Response File
+              </a>
+            </p>
+          </div>
+        </div>
+
+        <!-- Expired -->
+        <div *ngIf="caseItem.answered === 'expired'" style="margin-top: 20px; color: red; font-weight: bold;">
+          ⚠ This case has expired. You can no longer respond.
+        </div>
+
+        <!-- Response Form -->
+        <div *ngIf="caseItem.answered === 'no'" class="response-form" style="border-top: 1px solid #ddd; padding-top: 20px; margin-top: 30px;">
+          <h3 style="margin-bottom: 15px;">Respond to Case</h3>
+
+          <div class="form-group full-width">
+            <label for="diagnosis-{{caseItem._id}}">Diagnosis / Recommendation</label>
+            <textarea
+              id="diagnosis-{{caseItem._id}}"
+              name="diagnosis"
+              [(ngModel)]="responseTexts[caseItem._id]"
+              required
+              rows="4"
+              class="full-width"
+            ></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="responseFile-{{caseItem._id}}">Attach File (optional)</label>
+            <input
+              type="file"
+              id="responseFile-{{caseItem._id}}"
+              name="responseFile"
+              (change)="handleResponseFile($event, caseItem)"
+            />
+          </div>
+
+          <div class="button-group">
+            <button type="submit" (click)="submitResponse_naw(caseItem)">Send Response</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div *ngIf="activeSection === 'calendar-wrapper'" class="calendar-wrapper">
+
+  <!-- 🔁 Show calendar only if no date is selected -->
+  <full-calendar *ngIf="!selectedDateStr" [options]="calendarOptions"></full-calendar>
+
+  <!-- 👇 Show slot + form UI only if date is selected -->
+  <div *ngIf="selectedDateStr" class="event-creation-form">
+    <h3>📅 Schedule Event for {{ selectedDateStr }}</h3>
+
+   <div class="event-input-wrapper">
+  <label class="custom-label">Event Title</label>
+  <mat-form-field appearance="outline" class="full-width">
+    <input matInput [(ngModel)]="newEventTitle" placeholder="e.g., Follow-up Check" />
+  </mat-form-field>
+</div>
+
+
+
+    <p class="time-label">Choose Time Slot:</p>
+    <div class="slot-grid">
+      <button
+  mat-stroked-button
+  *ngFor="let time of timeSlots"
+  [ngClass]="{ 'selected-slot': time === selectedTime }"
+  (click)="selectedTime = time">
+  {{ time }}
+</button>
+
+    </div>
+
+    <div class="actions">
+      <button class="btn-back" (click)="cancelScheduling()">← Back</button>
+<button class="btn-save" (click)="confirmScheduling()">Save Event</button>
+
+    </div>
+  </div>
+</div>
+
+
+    <div *ngIf="activeSection === 'report-doctor'" class="report-doctor">
+      <h3>Report Doctor</h3>
+      <form (ngSubmit)="onSubmit()">
+        <label for="reason">Reason for Reporting</label>
+        <textarea id="reason" [(ngModel)]="reason" name="reason" required></textarea>
+      
+        <button type="submit" [disabled]="!reason">Report</button>
+      </form>
+    </div>
+<div *ngIf="activeSection === 'chat'" class="chat-container">
+
+  <!-- Header -->
+  <div class="chat-header" style="display:flex; align-items:center; gap:12px;">
+    👨‍⚕️ Chat with {{ activeDoctor || 'Doctor' }}
+    <button class="call-doctor-button" 
+        (click)="selectedDoctorId && makeCall(selectedDoctorId, 'voice')">📞 Call Doctor</button>
+    <button class="call-doctor-button" 
+        (click)="selectedDoctorId && makeCall(selectedDoctorId, 'video')">📹 Video Call</button>
+  </div>
+
+  <audio id="remoteAudio" autoplay></audio>
+  <audio [srcObject]="remoteStream" autoplay></audio>
+
+  <!-- Messages Area -->
+  <div #chatBox class="chat-messages">
+    <ng-container *ngIf="selectedDoctorId && conversations?.[selectedDoctorId]?.length; else noMessages">
+      <div *ngFor="let msg of conversations[selectedDoctorId]; let i = index"
+           class="message-bubble"
+           [ngClass]="{ 'sent': msg.senderId === user.id, 'received': msg.senderId !== user.id }"
+           (mouseenter)="hoveredMessage = i" (mouseleave)="hoveredMessage = null">
+
+        <!-- AUDIO MESSAGE -->
+        <ng-container *ngIf="msg.file && (msg.file.type?.startsWith('audio') || (msg.file.name && msg.file.name.toLowerCase().endsWith('.webm'))); else otherMessage">
+          <div class="audio-bubble">
+            <span class="audio-duration" *ngIf="msg.duration">{{ msg.duration }}</span>
+            <audio
+              (loadedmetadata)="setAudioDuration(msg, $event)"
+              (canplaythrough)="setAudioDuration(msg, $event)"
+              [src]="msg.file.url || ''"
+              [attr.type]="msg.file.type || 'audio/webm'"
+              controls>
+            </audio>
+          </div>
+        </ng-container>
+
+        <!-- OTHER MESSAGES -->
+        <ng-template #otherMessage>
+
+          <!-- CALL MESSAGES -->
+          <ng-container *ngIf="msg.type === 'voice_call' || msg.type === 'video_call'">
+            <div class="call-bubble"
+                 [ngClass]="{
+                   'sent': msg.senderId === user.id,
+                   'received': msg.senderId !== user.id,
+                   'answered': msg.callStatus === 'answered',
+                   'missed': msg.callStatus === 'missed',
+                   'rejected': msg.callStatus === 'rejected'
+                 }">
+              <span class="call-icon">
+                {{ msg.type === 'voice_call' ? '📞' : '📹' }}
+              </span>
+              <span class="call-status">
+                {{ msg.type === 'voice_call' ? 'Voice Call' : 'Video Call' }} - 
+                <ng-container *ngIf="msg.callStatus === 'answered'">
+                  Answered{{ msg.duration ? ' (' + formatDuration(msg.duration) + ')' : '' }}
+                </ng-container>
+                <ng-container *ngIf="msg.callStatus === 'missed'">Missed</ng-container>
+                <ng-container *ngIf="msg.callStatus === 'rejected'">Declined</ng-container>
+              </span>
+              <button *ngIf="msg.callStatus === 'missed' && msg.senderId !== user.id"
+                      class="callback-btn"
+                      (click)="makeCall(msg.senderId, msg.type === 'voice_call' ? 'voice' : 'video')">🔁 Call Back</button>
+            </div>
+          </ng-container>
+
+          <!-- TEXT & FILE MESSAGES -->
+          <ng-container *ngIf="msg.type === 'text' || msg.file">
+
+            <!-- FILES -->
+            <ng-container *ngIf="msg.file">
+              <ng-container *ngIf="msg.file.type?.startsWith('image/')">
+                <img [src]="msg.file.url || '#'" alt="{{ msg.file.name || 'Image' }}" class="message-image" />
+              </ng-container>
+              <ng-container *ngIf="msg.file.type === 'application/pdf'">
+                <a [href]="msg.file.url || '#'" target="_blank" class="message-file">📄 {{ msg.file.name || 'Uploading...' }}</a>
+              </ng-container>
+              <ng-container *ngIf="!msg.file.type?.startsWith('image/') && msg.file.type !== 'application/pdf' && !msg.file.type?.startsWith('audio')">
+                <a [href]="msg.file.url || '#'" target="_blank" class="message-file">📁 {{ msg.file.name || 'Uploading...' }}</a>
+              </ng-container>
+            </ng-container>
+
+            <!-- TEXT -->
+           <span *ngIf="msg.content || (msg.senderId === user.id && msg.file && !msg.content)">
+  {{ msg.content || '' }}
+  <small *ngIf="msg.edited">(edited)</small>
+</span>
+
+
+            <!-- SENDER EDIT / MENU -->
+            <ng-container *ngIf="msg.senderId === user.id">
+              <input *ngIf="editingMessage === i"
+                     [(ngModel)]="editMessageContent"
+                     (keydown.enter)="saveEdit(i)"
+                     (keydown.escape)="cancelEdit_1()"
+                     autofocus />
+              <button *ngIf="hoveredMessage === i" class="more-btn" (click)="toggleMessageMenu(i, $event)">⋯</button>
+              <div *ngIf="openMenuIndex === i" class="message-menu">
+                <button (click)="startEdit(i)">Edit</button>
+                <button (click)="confirmDelete_1(i)">Delete</button>
+              </div>
+            </ng-container>
+
+          </ng-container>
+
+        </ng-template>
+
+        <!-- TIMESTAMP -->
+        <small class="message-time">
+          {{ msg.timestamp | date: 'shortTime' }}
+          <ng-container *ngIf="msg.senderId === user.id">
+            <span *ngIf="msg.status === 'sent'">✔</span>
+            <span *ngIf="msg.status === 'read'" class="read-check">✔✔</span>
+          </ng-container>
+        </small>
+
+      </div>
+    </ng-container>
+
+    <ng-template #noMessages>
+      <div class="no-messages">No messages yet. Start the conversation!</div>
+    </ng-template>
+  </div>
+
+  <!-- Input Area -->
+  <form (ngSubmit)="sendMessage()" class="chat-input" enctype="multipart/form-data">
+    <input [(ngModel)]="newMessage"
+           name="message"
+           placeholder="Type a message..."
+           (input)="onInputChange()"
+           [required]="!selectedFile_1 && !isRecording" />
+    <label class="file-upload">
+      📎
+      <input type="file" (change)="onFileSelected($event)" accept="image/*,application/pdf" />
+    </label>
+    <button type="button" (click)="startRecording()" [disabled]="isRecording" title="Record Voice">🎤</button>
+    <button type="button" (click)="stopRecording()" [disabled]="!isRecording" title="Stop Recording">⏹</button>
+    <button type="submit" [disabled]="!newMessage && !selectedFile_1 && !selectedAudioFile && !isRecording">Send</button>
+  </form>
+
+  <!-- File Preview -->
+  <div class="chat-previews">
+    <div *ngIf="selectedFile_1" class="selected-file-preview">📎 <strong>{{ selectedFile_1.name }}</strong></div>
+    <div *ngIf="selectedAudioFile" class="selected-audio-preview"><audio [src]="audioPreviewUrl || ''" controls></audio></div>
+  </div>
+
+  <!-- Typing Indicator -->
+  <div *ngIf="selectedDoctorId && typingUsers.has(selectedDoctorId)" class="typing-indicator">
+    <em>Doctor is typing...</em>
+  </div>
+
+</div>
+
+   <div *ngIf="activeSection === 'send-ecg'" class="respond-ecg-container">
+   <div *ngIf="!isLoading && ecgs.length > 0" class="filter-section">
+    <label for="emergencyFilter">Filter by Emergency Level:</label>
+    <select id="emergencyFilter" [(ngModel)]="selectedEmergencyLevel_1">
+      <option value="">All</option>
+      <option value="normal">Normal</option>
+      <option value="urgent">Urgent</option>
+      <option value="critical">Critical</option>
+    </select>
+  </div>
+  <!-- Loading Message -->
+  <div *ngIf="isLoading" class="loading">Loading ECGs...</div>
+
+  <!-- No ECG Message -->
+  <div *ngIf="!isLoading && filteredEcgs_1.length === 0" class="no-ecg-message">
+    No ECGs received from this generalist.
+  </div>
+
+  <!-- Filter Dropdown -->
+  
+
+  <!-- ECG List -->
+  <div *ngIf="!isLoading" class="ecg-list">
+    <div *ngFor="let ecg of filteredEcgs_1" class="ecg-card">
+
+      <!-- ECG Info -->
+      <div class="ecg-header">
+        <p><strong>Emergency Level:</strong> {{ ecg.emergencyLevel }}</p>
+        <p><strong>Uploaded:</strong> {{ ecg.uploadDate | date: 'short' }}</p>
+      </div>
+
+      <!-- ECG File Link -->
+      <div class="ecg-file" *ngIf="ecg.filePath || ecg.webPath">
+        <a [href]="ecg.webPath" target="_blank" rel="noopener">View ECG File</a>
+      </div>
+
+      <!-- Answered Section -->
+      <!-- Answered Section -->
+<div *ngIf="ecg.answered === 'yes'" class="ecg-response">
+  <p><strong>Your Response:</strong> {{ ecg.answer }}</p>
+  <p><strong>Responded On:</strong> {{ ecg.responseDate | date: 'short' }}</p>
+</div>
+
+<!-- Expired Section -->
+<div *ngIf="ecg.answered === 'expired'" class="ecg-expired">
+  <p style="margin-top: 20px; color: red; font-weight: bold;"> ⚠ This ECG has expired. You can no longer respond.</p>
+</div>
+
+<!-- Response Form -->
+<div *ngIf="ecg.answered === 'no'" class="response-form">
+  <textarea [(ngModel)]="tempResponses[ecg._id]" placeholder="Write your response here..."></textarea>
+  <button (click)="submitResponse(ecg)">Send Response</button>
+</div>
+
+
+    </div>
+  </div>
+
+</div>
+
+
+    <div class="doctors-container" *ngIf="activeSection === 'send-to-doctor'">
+    
+      <div 
+      *ngFor="let doctor of generalDoctors; let i = index"
+      class="doctor-card"
+      [class.selected]="getDoctorId(doctor) === selectedDoctorId"
+      (click)="onSelectDoctor(doctor)">
+      
+
+  
+  
+ 
+
+ 
+ 
+
+<!-- Doctor Image -->
+<img [src]="'http://localhost:5000' + doctor.photo" alt="Doctor Image" class="doctor-image" />
+
+<!-- Doctor Info -->
+<div class="doctor-info">
+  <h3>{{ doctor.name }}</h3>
+  <p>{{ doctor.specialty }}</p>
+  <p>{{ doctor.practiceLocation }}</p>
+ 
+
+</div>
+
+    
+          <div class="doctor-actions">
+            <!-- Send ECG button -->
+ 
+
+<!-- Other actions -->
+<div class="nav-link-1" (click)="onchat($event, i, doctor)">Chat</div>
+<div class="nav-link-1"  (click)="onreport($event, i, doctor)">Report </div>
+<div class="nav-link-1" (click)="onbook($event, i, doctor)" >Book </div>
+<div class="nav-link-1"  (click)="onRespondCase($event, i, doctor)" >Respond Case</div>
+<div class="nav-link-1"  (click)="onRespondECG($event, i, doctor)" >Respond ECG</div>
+
+
+
+</div>
+
+        </div>
+      </div>
+    
+       <div class="main_nawress" *ngIf="activeSection === 'delete'">
+
+        <div class="card-content">
+            <span class="title">Are you sure you want to delete your account?</span>
+          <div class="buttons">
+            <button (click)="confirmDelete()">Yes</button>
+            <button (click)="activeSection = 'oath'">No</button> <!-- back to Oath -->
+            
+            
+          </div>
+        </div>
+      </div>
+      <div *ngIf="isLoading" class="loading-indicator">
+        <div class="spinner"></div>
+        <p>Processing your request...</p>
+      </div>
+      
+      <!-- Goodbye Message -->
+      <div class="success-message_1"*ngIf="activeSection === 'goodbye'">
+        <p>We were happy to have you among us and hope to see you again. ❤️</p>
+      </div>
+    <div class="main_nawress" *ngIf="activeSection === 'profile-settings'">
+      <div class="nounou"> 
+        <div class="container">
+
+            
+          <header>Update Cardiologist Info</header>
+
+          <form #userForm="ngForm" (ngSubmit)="submitForm(userForm)" novalidate>
+              <div class="form first">
+                  <div class="details personal">
+                      <span class="title">Personal Details</span>
+                      <div class="fields">
+  
+                          <!-- Full Name -->
+                          <div class="input-field">
+                              <label>Full Name</label>
+                              <input type="text" placeholder="Enter your name" required 
+                                  [(ngModel)]="user.name" name="name" #name="ngModel">
+                              <div *ngIf="name.invalid && name.touched" class="error">Name is required</div>
+                          </div>
+  
+                          <!-- Address -->
+                          <div class="input-field">
+                              <label>Address</label>
+                              <input type="text" placeholder="Enter your address" required 
+                                  [(ngModel)]="user.address" name="address" #address="ngModel">
+                              <div *ngIf="address.invalid && address.touched" class="error">Address is required</div>
+                          </div>
+  
+                          <!-- Email -->
+                          <div class="input-field">
+                              <label>Email</label>
+                              <input type="email" placeholder="Enter your email" required 
+                                  [(ngModel)]="user.email" name="email" #email="ngModel">
+                              <div *ngIf="email.invalid && email.touched" class="error">Enter a valid email</div>
+                          </div>
+  
+                          <!-- Mobile Number -->
+                          <div class="input-field">
+                              <label>Mobile Number</label>
+                              <input type="text" placeholder="Enter mobile number" required 
+                                  [(ngModel)]="user.mobile" name="mobile" #mobile="ngModel"
+                                  pattern="^[0-9]{8,15}$">
+                              <div *ngIf="mobile.invalid && mobile.touched" class="error">Enter a valid phone number</div>
+                          </div>
+  
+                          <!-- Specialty -->
+                          <div class="input-field">
+                              <label>Specialty</label>
+                              <select required [(ngModel)]="user.specialty" name="specialty" #specialty="ngModel">
+                                  <option disabled selected>Select specialty</option>
+                                  <option value="generaliste">Médecin Généraliste</option>
+                                  <option value="cardiologie">Expert en Cardiologie</option>
+                              </select>
+                              <div *ngIf="specialty.invalid && specialty.touched" class="error">Select a specialty</div>
+                          </div>
+  
+                          <!-- Place of Practice -->
+                          <div class="input-field">
+                              <label>Place of Practice</label>
+                              <input type="text" placeholder="Enter your practice location" required 
+                                  [(ngModel)]="user.practiceLocation" name="practiceLocation" #practiceLocation="ngModel">
+                              <div *ngIf="practiceLocation.invalid && practiceLocation.touched" class="error">
+                                  Enter your practice location
+                              </div>
+                          </div>
+  
+                          <!-- Password -->
+                          <div class="input-field">
+                              <label>Password</label>
+                              <input type="password" placeholder="Enter your password" required 
+                                  [(ngModel)]="user.password" name="password" #password="ngModel"
+                                  minlength="6">
+                              <div *ngIf="password.invalid && password.touched" class="error">
+                                  Password must be at least 6 characters
+                              </div>
+                          </div>
+  
+                          <!-- Upload Photo -->
+                          <div class="input-field">
+                              <label>Upload Photo</label>
+                              <input type="file" accept="image/*" (change)="onFileChange($event)" name="photo">
+                              <div *ngIf="!user.photo && userForm.touched" class="error">Photo is required</div>
+  
+                              <!-- Image Preview -->
+                              <div *ngIf="imagePreview">
+                                  <img [src]="imagePreview" alt="Image Preview" style="max-width: 200px; max-height: 200px;">
+                              </div>
+                          </div>
+  
+                      </div>
+                  </div>
+  
+                  <!-- Submit Button -->
+                  <button class="nextBtn" type="submit" [disabled]="userForm.invalid || !user.photo || isLoading">
+                      <span class="btnText">submit</span>
+                      <i class="uil uil-navigator"></i>
+                  </button>
+              </div>
+          </form>
+  
+         
+          <div *ngIf="responseMessage" class="response-message">
+              {{ responseMessage }}
+          </div>
+  
+          
+          <div *ngIf="isLoading" class="loading-indicator">
+            <div class="spinner"></div>
+            <p>Submitting...</p>
+          </div>
+      </div>
+      </div>
+     </div>
+    <div *ngIf="activeSection === 'oath'" class="hippocratic-oath">
+
+        <h2>🩺 Modern Hippocratic Oath</h2>
+        <p>
+          I swear to fulfill, to the best of my ability and judgment, this covenant:
+          <br><br>
+          I will respect the hard-won scientific gains of those physicians in whose steps I walk,
+          and gladly share such knowledge as is mine with those who are to follow.
+          <br><br>
+          I will apply, for the benefit of the sick, all measures [that] are required,
+          avoiding those twin traps of overtreatment and therapeutic nihilism.
+          <br><br>
+          I will remember that there is art to medicine as well as science,
+          and that warmth, sympathy, and understanding may outweigh the surgeon's knife or the chemist’s drug.
+          <br><br>
+          I will not be ashamed to say "I know not," nor will I fail to call in my colleagues
+          when the skills of another are needed for a patient’s recovery.
+          <br><br>
+          I will respect the privacy of my patients, for their problems are not disclosed to me that the world may know.
+          <br><br>
+          Most especially must I tread with care in matters of life and death. If it is given me to save a life, all thanks.
+          But it may also be within my power to take a life; this awesome responsibility must be faced with great humbleness
+          and awareness of my own frailty.
+          <br><br>
+          I will remember that I do not treat a fever chart, a cancerous growth, but a sick human being,
+          whose illness may affect the person’s family and economic stability. My responsibility includes these related problems,
+          if I am to care adequately for the sick.
+          <br><br>
+          I will prevent disease whenever I can, for prevention is preferable to cure.
+          <br><br>
+          I will remember that I remain a member of society, with special obligations to all my fellow human beings,
+          those sound of mind and body as well as the infirm.
+          <br><br>
+          If I do not violate this oath, may I enjoy life and art, respected while I live and remembered with affection thereafter.
+          <br><br>
+          May I always act so as to preserve the finest traditions of my calling and may I long experience the joy
+          of healing those who seek my help.
+        </p>
+      
+
+      </div>
+      
+</div>
+<div class="toast-container" *ngIf="toastMessage" (click)="closeToast()">
+  {{ toastMessage }}
+  <button class="close-toast-btn" aria-label="Close notification">✖</button>
+</div>
+<!-- 🔊 Global ringtone audio element -->
+<audio id="incomingRingtone" loop>
+  <source src="assets/ring.wav" type="audio/wav" />
+</audio>
+
+<!-- Incoming call overlay -->
+<!-- Incoming call overlay -->
+<div *ngIf="callStatus === 'ringing'" class="call-overlay">
+  <p class="call-message">
+    {{ (callType || 'voice') === 'video' ? '📹 Incoming video call' : '📞 Incoming call' }} 
+    from {{ callerName || 'Doctor' }}
+  </p>
+  <div class="call-actions">
+    <button class="accept-btn" (click)="acceptCall()">✅ Accept</button>
+    <button class="reject-btn" (click)="rejectCall()">❌ Reject</button>
+  </div>
+</div>
+
+<!-- Outgoing call overlay -->
+<div *ngIf="isCalling" class="call-overlay">
+  <p class="call-message">
+    {{ (callType || 'voice') === 'video' ? '📹 Calling' : '📤 Calling' }} 
+    {{ activeDoctor || 'Doctor' }}...
+  </p>
+  <button class="reject-btn" (click)="cancelCall()">❌ Cancel Call</button>
+</div>
+
+<!-- Connected voice call overlay -->
+<div *ngIf="(callType || 'voice') === 'voice' && callStatus === 'connected'" class="call-overlay">
+  <p class="call-message">
+    🟢 In call with {{ callerName || activeDoctor || 'Doctor' }}
+  </p>
+  <div class="call-buttons">
+    <button class="reject-btn" (click)="hangUp()">📴 Hang Up</button>
+    <button *ngIf="!isMuted" (click)="muteMic()">🔇 Mute</button>
+    <button *ngIf="isMuted" (click)="unmuteMic()">🎤 Unmute</button>
+  </div>
+</div>
+
+
+<!-- Video call container -->
+
+
+  <!-- Bottom controls for video calls -->
+  
+
+
+
+
+
+<!-- Video container only for video calls -->
+<!-- Video container only for video calls -->
+<!-- Video container only for video calls -->
+
+
+ <div class="top-right-container">
+  <div class="photo-corner" (click)="toggleAccountMenu()">
+    <img [src]="doctorPhotoUrl" alt="Doctor's Photo" id="doctor-photo" />
+    <p class="doctor-username">{{ user?.name }}</p>
+
+    <div *ngIf="showAccountMenu" class="account-dropdown">
+      <h3>🧑‍⚕️ Account</h3>
+      <div class="nav-link_1" (click)="onLogout()">Logout</div>
+      <div class="nav-link_1" (click)="onShowProfileSettings()">Profile Settings</div>
+      <div class="nav-link_1" (click)="onDeleteAccount()">Delete Account</div>
+    </div>
+  </div>
+</div>
+
+<ng-template #photoError>
+  <p class="photo-error">Photo not found or failed to load. Please check the console for errors.</p>
+</ng-template>

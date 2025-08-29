@@ -1,0 +1,42 @@
+<body>
+  <span class="logo">MedConnect</span>
+
+  <!-- If 2FA is enabled -->
+  <div *ngIf="is2FAEnabled; else enable2FASection" class="active-section">
+    <h3>✅ Two-factor authentication is already enabled.</h3>
+    <button (click)="disable2FA()">Disable 2FA</button>
+  </div>
+
+  <!-- If 2FA not enabled, show QR + verify token -->
+  <ng-template #enable2FASection>
+    <div *ngIf="qrCodeImage; else loading" class="two-fa-container-vertical">
+      <div class="qr-section">
+        <h3>Scan this QR Code with Google Authenticator</h3>
+        <img [src]="qrCodeImage" alt="QR Code for 2FA" />
+      </div>
+
+      <div class="verify-section">
+        <h3>Verify your code</h3>
+        <label for="token">6-digit code:</label>
+        <input
+          id="token"
+          [(ngModel)]="userToken"
+          maxlength="6"
+          placeholder="123456"
+        />
+        <button (click)="verify2FA()" [disabled]="isLoading">Verify & Activate</button>
+
+        <p *ngIf="errorMessage" class="error-msg">{{ errorMessage }}</p>
+        <p *ngIf="successMessage" class="success-msg">{{ successMessage }}</p>
+        <p *ngIf="isLoading">Verifying...</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #loading>
+    <p>Loading QR code...</p>
+  </ng-template>
+
+  <button class="corner-return-button" (click)="goBack()">← Return</button>
+</body>
+

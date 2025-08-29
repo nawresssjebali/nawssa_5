@@ -1,0 +1,115 @@
+<div class="nounou"> 
+    <div class="container">
+        <header>Registration</header>
+        <form #userForm="ngForm" (ngSubmit)="submitForm(userForm)" novalidate>
+            <div class="form first">
+                <div class="details personal">
+                    <span class="title">Personal Details</span>
+                    <div class="fields">
+                        <!-- Flexbox container for rows -->
+                        <div class="field-row">
+                            <!-- Full Name -->
+                            <div class="input-field">
+                                <label>Full Name</label>
+                                <input type="text" placeholder="Enter your name" required 
+                                    [(ngModel)]="user.name" name="name" #name="ngModel">
+                                <div *ngIf="name.invalid && name.touched" class="error">Name is required</div>
+                            </div>
+
+                            <!-- Address -->
+                            <div class="input-field">
+                                <label>Address</label>
+                                <input type="text" placeholder="Enter your address" required 
+                                    [(ngModel)]="user.address" name="address" #address="ngModel">
+                                <div *ngIf="address.invalid && address.touched" class="error">Address is required</div>
+                            </div>
+                        </div>
+
+                        <div class="field-row">
+                            <!-- Email -->
+                            <div class="input-field">
+                                <label>Email</label>
+                                <input type="email" placeholder="Enter your email" required 
+                                    [(ngModel)]="user.email" name="email" #email="ngModel">
+                                <div *ngIf="email.invalid && email.touched" class="error">Enter a valid email</div>
+                            </div>
+
+                            <!-- Mobile Number -->
+                            <div class="input-field">
+                                <label>Mobile Number</label>
+                                <input type="text" placeholder="Enter mobile number" required 
+                                    [(ngModel)]="user.mobile" name="mobile" #mobile="ngModel"
+                                    pattern="^[0-9]{8,15}$">
+                                <div *ngIf="mobile.invalid && mobile.touched" class="error">Enter a valid phone number</div>
+                            </div>
+                        </div>
+
+                        <div class="field-row">
+                            <!-- Specialty -->
+                            <div class="input-field">
+                                <label>Specialty</label>
+                                <select required [(ngModel)]="user.specialty" name="specialty" #specialty="ngModel">
+                                    <option disabled selected>Select specialty</option>
+                                    <option value="generaliste">Médecin Généraliste</option>
+                                    <option value="cardiologie">Expert en Cardiologie</option>
+                                </select>
+                                <div *ngIf="specialty.invalid && specialty.touched" class="error">Select a specialty</div>
+                            </div>
+
+                            <!-- Place of Practice -->
+                            <div class="input-field">
+                                <label>Place of Practice</label>
+                                <input type="text" placeholder="Enter your practice location" required 
+                                    [(ngModel)]="user.practiceLocation" name="practiceLocation" #practiceLocation="ngModel">
+                                <div *ngIf="practiceLocation.invalid && practiceLocation.touched" class="error">
+                                    Enter your practice location
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-row">
+                            <!-- Password -->
+                            <div class="input-field">
+                                <label>Password</label>
+                                <input type="password" placeholder="Enter your password" required 
+                                    [(ngModel)]="user.password" name="password" #password="ngModel"
+                                    minlength="6">
+                                <div *ngIf="password.invalid && password.touched" class="error">
+                                    Password must be at least 6 characters
+                                </div>
+                            </div>
+
+                            <!-- Upload Photo -->
+                            <div class="input-field">
+                                <label>Upload Photo</label>
+                                <input type="file" accept="image/*" (change)="onFileChange($event)" name="photo">
+                                <div *ngIf="!user.photo && userForm.touched" class="error">Photo is required</div>
+
+                                <!-- Image Preview -->
+                                <div *ngIf="imagePreview">
+                                    <img [src]="imagePreview" alt="Image Preview" style="max-width: 200px; max-height: 200px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button class="nextBtn" type="submit" [disabled]="userForm.invalid || !user.photo || isLoading">
+                    <span class="btnText">Submit</span>
+                    <i class="uil uil-navigator"></i>
+                </button>
+            </div>
+        </form>
+
+        <!-- Response message -->
+        <div *ngIf="responseMessage" class="response-message">
+            {{ responseMessage }}
+        </div>
+
+        <!-- Loading Spinner -->
+        <div *ngIf="isLoading" class="loading-indicator">
+            <p>Submitting...</p>
+        </div>
+    </div>
+</div>

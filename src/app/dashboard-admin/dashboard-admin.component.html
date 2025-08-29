@@ -1,0 +1,546 @@
+<div class="dashboard">
+  <div class="sidebar">
+    <h2>Dashboard</h2>
+    <div class="nav-link" (click)="onLogout()"><h3>🔓Logout</h3></div>
+    <div class="nav-link" (click)="onManageUsers()"><h3>👥 User Management</h3></div>
+      <div class="nav-link" (click)="onReport()">
+  <h3>📝 Report Response</h3>
+</div>
+<div class="nav-link" (click)="onDashboard()">
+  <h3>📊 Analytics</h3>
+</div>
+<div class="nav-link" (click)="onSecurityReport()">
+  <h3>🔒 Security Report Response</h3>
+</div>
+<div class="nav-link" (click)="onFAQMangement()">
+  <h3>❓ FAQ Management</h3>
+</div>
+ <div class="section white_one">
+            <img src="../../assets/nawrassen.png" alt="hearts" class="heart-strip" />
+        </div>
+  </div>
+
+  <div class="dashboard-wrapper">
+  
+<div *ngIf="activeSection === 'dashboard'" class="iframe-wrapper">
+  <iframe
+    id="pbiIframe"
+    title="dashboard"
+    [src]="iframeSrc"
+    allowFullScreen="true">
+  </iframe>
+</div>
+
+
+
+
+
+
+
+    <div class="reports-management" *ngIf="activeSection === 'archive'"><div class="header-row" style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+  <h2>Archived FAQs</h2>
+
+
+</div>
+
+
+
+
+<div class="filters-row">
+  <div class="filter-item">
+    <label for="questionFilter">Search Question:</label>
+    <input
+      id="questionFilter"
+      type="text"
+      [(ngModel)]="questionFilter"
+      (input)="applyFilters_3()"
+      placeholder="Search question"
+    />
+  </div>
+
+  
+
+  <div class="filter-item">
+    <label for="typeFilter">Filter by Type:</label>
+    <select
+      id="typeFilter"
+      [(ngModel)]="typeFilter"
+      (change)="applyFilters_3()"
+    >
+      <option value="all">All</option>
+      <option value="cardiologist">Cardiologist</option>
+      <option value="generalist">Generalist</option>
+    </select>
+  </div>
+
+
+</div>
+
+
+  <table border="1" cellpadding="5" width="100%">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>Date Submitted</th>
+        <th>Status</th>
+        <th>FAQ Type</th>  <!-- New column -->
+      
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let faq of filteredFaqs">
+        <td>{{ faq.question | slice:0:50 }}{{ faq.question.length > 50 ? '...' : '' }}</td>
+        <td>{{ faq.createdAt | date:'short' }}</td>
+        <td>{{ faq.status | titlecase }}</td>
+        <td>
+          <span *ngIf="faq.faqType === 'generalist'">General Practitioner</span>
+          <span *ngIf="faq.faqType === 'cardiologist'">Cardiologist</span>
+          <span *ngIf="!faq.faqType">Unknown</span>
+        </td>
+        
+        <td>
+          <div class="button-row">
+            <ng-container *ngIf="faq.status === 'archived'">
+             
+              <button (click)="onUnarchive(faq)">Unarchive</button>
+              <button (click)="deleteFaq(faq)">Delete</button>
+            </ng-container>
+
+           
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table></div>
+<div class="reports-management" *ngIf="activeSection === 'FAQ'">
+<div class="header-row" style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+  <h2>FAQ Management</h2>
+  <div class="archive-btn" (click)="goToArchive()" role="button" tabindex="0" 
+     (keydown.enter)="goToArchive()" (keydown.space)="goToArchive()">
+  📂 Archive
+</div>
+
+</div>
+
+
+
+
+<div class="filters-row">
+  <div class="filter-item">
+    <label for="questionFilter">Search Question:</label>
+    <input
+      id="questionFilter"
+      type="text"
+      [(ngModel)]="questionFilter"
+      (input)="applyFilters_2()"
+      placeholder="Search question"
+    />
+  </div>
+
+  <div class="filter-item">
+    <label for="statusFilter">Filter by Status:</label>
+    <select
+      id="statusFilter"
+      [(ngModel)]="statusFilter"
+      (change)="applyFilters_2()"
+    >
+      <option value="all">All</option>
+      <option value="pending">Pending</option>
+      <option value="answered">Answered</option>
+    </select>
+  </div>
+
+  <div class="filter-item">
+    <label for="typeFilter">Filter by Type:</label>
+    <select
+      id="typeFilter"
+      [(ngModel)]="typeFilter"
+      (change)="applyFilters_2()"
+    >
+      <option value="all">All</option>
+      <option value="cardiologist">Cardiologist</option>
+      <option value="generalist">Generalist</option>
+    </select>
+  </div>
+
+
+</div>
+
+
+  <table border="1" cellpadding="5" width="100%">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>Date Submitted</th>
+        <th>Status</th>
+        <th>FAQ Type</th>  <!-- New column -->
+      
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let faq of filteredFaqs">
+        <td>{{ faq.question | slice:0:50 }}{{ faq.question.length > 50 ? '...' : '' }}</td>
+        <td>{{ faq.createdAt | date:'short' }}</td>
+        <td>{{ faq.status | titlecase }}</td>
+        <td>
+          <span *ngIf="faq.faqType === 'generalist'">General Practitioner</span>
+          <span *ngIf="faq.faqType === 'cardiologist'">Cardiologist</span>
+          <span *ngIf="!faq.faqType">Unknown</span>
+        </td>
+        
+        <td>
+          <div class="button-row">
+            <ng-container *ngIf="faq.status === 'pending'">
+              <button (click)="answerFaq(faq)">Answer</button>
+              <button (click)="archiveFaq(faq)">Archive</button>
+              <button (click)="deleteFaq(faq)">Delete</button>
+            </ng-container>
+
+            <ng-container *ngIf="faq.status === 'answered'">
+              <button (click)="seeAnswer(faq)">See Answer</button>
+              <button (click)="editFaq(faq)">Edit</button>
+              <button (click)="deleteFaq(faq)">Delete</button>
+            </ng-container>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+     <div class="reports-management" *ngIf="activeSection === 'securityreports'">
+     
+
+  <div class="header-row" style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+   <h2>Security Reports</h2>
+  </div>
+  <div class="filters-row">
+  <div class="filter-item">
+    <label for="usernameFilter">Filter by Username:</label>
+    <input
+      id="usernameFilter"
+      type="text"
+      [(ngModel)]="usernameFilter"
+      (input)="applyFilters_1()"
+      placeholder="Search username"
+    />
+  </div>
+
+  <div class="filter-item">
+  <label for="statusFilter">Filter by Status:</label>
+  <select
+    id="statusFilter"
+    [(ngModel)]="statusFilter"
+    (change)="applyFilters_1()"
+  >
+    <option value="all">All</option>
+    <option value="pending">Pending</option>
+    <option value="valid">Valid</option>
+    <option value="invalid">Invalid</option>
+  
+  </select>
+</div>
+
+  <div class="filter-item">
+    <label for="severityFilter">Filter by Severity:</label>
+    <select
+      id="severityFilter"
+      [(ngModel)]="severityFilter"
+      (change)="applyFilters_1()"
+    >
+      <option value="all">All</option>
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+    </select>
+  </div>
+</div>
+
+  <table border="1" cellpadding="5" width="100%">
+    <thead>
+      <tr>
+        <th>Name</th>
+<th>Description</th>
+<th>Steps to Reproduce</th>
+<th>Severity</th>
+<th>Actions Taken</th>
+<th>Date Submitted</th>
+<th>Status</th>       <!-- NEW column added here -->
+<th>Details</th>
+<th>Actions</th>
+
+      </tr>
+    </thead>
+    <tbody>
+     <tr *ngFor="let report of filteredReports_1">
+        <td>{{ report.name || 'Anonymous' }}
+           <small> {{ report.email || 'Anonymous' }}</small>
+        </td>
+       
+        <td>{{ report.description | slice:0:50 }}{{ report.description.length > 50 ? '...' : '' }}</td>
+        <td>{{ report.steps || 'N/A' }}</td>
+        <td>{{ report.severity || 'N/A' }}</td>
+        <td>
+          <ul>
+            <li *ngIf="report.actions?.changePassword">Changed Password</li>
+            <li *ngIf="report.actions?.enable2FA">Enabled 2FA</li>
+            <li *ngIf="!hasActions(report.actions)">No Actions Taken</li>
+          </ul>
+        </td>
+        <td>{{ report.createdAt | date:'short' }}</td>
+        <td>{{ report.status || 'Pending' }}</td> 
+        <td><button (click)="viewReportDetails(report)">View Details</button></td>
+        <td>
+  <div class="button-row">
+  <button (click)="markReportValid(report)">Mark Valid</button>
+  <button (click)="markReportInvalid(report)">Mark Invalid</button>
+  <button (click)="forceLogout(report)">Force Logout</button>
+</div>
+
+
+</td>
+
+      </tr>
+    </tbody>
+  </table>
+
+
+     </div>
+  <div class="reports-management" *ngIf="activeSection === 'reports'">
+  
+  <div class="header-row" style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+ <h2>Admin - Reports Management</h2>
+  </div>
+<div class="filters-row">
+  <div class="filter-item">
+    <label for="usernameFilter">Filter by Username:</label>
+    <input id="usernameFilter" type="text" [(ngModel)]="usernameFilter" (input)="applyFilters()" placeholder="Search username" />
+  </div>
+
+  <div class="filter-item">
+    <label for="emailFilter">Filter by Email:</label>
+    <input id="emailFilter" type="text" [(ngModel)]="emailFilter" (input)="applyFilters()" placeholder="Search email" />
+  </div>
+
+  <div class="filter-item">
+    <label for="statusFilter">Filter by Status:</label>
+    <select id="statusFilter" [(ngModel)]="statusFilter" (change)="applyFilters()">
+      <option value="all">All</option>
+      <option value="pending">Pending</option>
+      <option value="reviewed">Reviewed</option>
+    </select>
+  </div>
+</div>
+
+
+
+  <div *ngIf="isLoading">Loading reports...</div>
+  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <table *ngIf="!isLoading && !errorMessage && filteredReports.length > 0" border="1" width="100%" cellpadding="5">
+    <thead>
+      <tr>
+        <th>Reporter</th>
+        <th>Reported User</th>
+        <th>Reason</th>
+        <th>Status</th>
+        <th>Date Submitted</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let report of pagedReports">
+       <td>
+  {{ report.username.name }}<br />
+  <small>{{ report.username.email }}</small>
+</td>
+
+<td>
+ {{ report.reportedDoctorInfo?.name || report.reportedDoctor || 'Unknown' }}<br />
+    <small> {{ report.reportedDoctorInfo?.email || 'N/A' }}</small>
+</td>
+
+ 
+
+        <td>{{ report.reason | slice:0:50 }}{{ report.reason.length > 50 ? '...' : '' }}</td>
+        <td>{{ report.treated ? 'Reviewed' : 'Pending' }}</td>
+        <td>{{ report.time | date: 'medium' }}</td>
+        <td>
+          <button (click)="viewDetails(report)">View Details</button>
+          <button (click)="respondToReport(report)">Respond</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+<div *ngIf="filteredReports.length === 0 && !isLoading" class="no-reports-message">
+  No reports found.
+</div>
+
+  <div *ngIf="totalPages > 1" style="margin-top:10px;">
+    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
+    Page {{ currentPage }} / {{ totalPages }}
+    <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+  </div>
+</div>
+
+
+      <div class="main_nawress" *ngIf="activeSection === 'profile-settings'">
+      <div class="nounou"> 
+        <div class="container">
+
+            
+          <header>Update Info</header>
+
+          <form #userForm="ngForm" (ngSubmit)="submitForm(userForm)" novalidate>
+              <div class="form first">
+                  <div class="details personal">
+                      <span class="title">Personal Details</span>
+                      <div class="fields">
+  
+                          <!-- Full Name -->
+                          <div class="input-field">
+                              <label>Full Name</label>
+                              <input type="text" placeholder="Enter your name" required 
+                                  [(ngModel)]="user.name" name="name" #name="ngModel">
+                              <div *ngIf="name.invalid && name.touched" class="error">Name is required</div>
+                          </div>
+  
+                          <!-- Address -->
+                          <div class="input-field">
+                              <label>Address</label>
+                              <input type="text" placeholder="Enter your address" required 
+                                  [(ngModel)]="user.address" name="address" #address="ngModel">
+                              <div *ngIf="address.invalid && address.touched" class="error">Address is required</div>
+                          </div>
+  
+                          <!-- Email -->
+                          <div class="input-field">
+                              <label>Email</label>
+                              <input type="email" placeholder="Enter your email" required 
+                                  [(ngModel)]="user.email" name="email" #email="ngModel">
+                              <div *ngIf="email.invalid && email.touched" class="error">Enter a valid email</div>
+                          </div>
+  
+                          <!-- Mobile Number -->
+                          <div class="input-field">
+                              <label>Mobile Number</label>
+                              <input type="text" placeholder="Enter mobile number" required 
+                                  [(ngModel)]="user.mobile" name="mobile" #mobile="ngModel"
+                                  pattern="^[0-9]{8,15}$">
+                              <div *ngIf="mobile.invalid && mobile.touched" class="error">Enter a valid phone number</div>
+                          </div>
+  
+                          <!-- Specialty -->
+                          <div class="input-field">
+                              <label>Specialty</label>
+                              <select required [(ngModel)]="user.specialty" name="specialty" #specialty="ngModel">
+                                  <option disabled selected>Select specialty</option>
+                                  <option value="generaliste">Médecin Généraliste</option>
+                                  <option value="cardiologie">Expert en Cardiologie</option>
+                              </select>
+                              <div *ngIf="specialty.invalid && specialty.touched" class="error">Select a specialty</div>
+                          </div>
+  
+                          <!-- Place of Practice -->
+                          <div class="input-field">
+                              <label>Place of Practice</label>
+                              <input type="text" placeholder="Enter your practice location" required 
+                                  [(ngModel)]="user.practiceLocation" name="practiceLocation" #practiceLocation="ngModel">
+                              <div *ngIf="practiceLocation.invalid && practiceLocation.touched" class="error">
+                                  Enter your practice location
+                              </div>
+                          </div>
+  
+                          <!-- Password -->
+                          <div class="input-field">
+                              <label>Password</label>
+                              <input type="password" placeholder="Enter your password" required 
+                                  [(ngModel)]="user.password" name="password" #password="ngModel"
+                                  minlength="6">
+                              <div *ngIf="password.invalid && password.touched" class="error">
+                                  Password must be at least 6 characters
+                              </div>
+                          </div>
+  
+                          <!-- Upload Photo -->
+                          <div class="input-field">
+                              <label>Upload Photo</label>
+                              <input type="file" accept="image/*" (change)="onFileChange($event)" name="photo">
+                              <div *ngIf="!user.photo && userForm.touched" class="error">Photo is required</div>
+  
+                              <!-- Image Preview -->
+                              <div *ngIf="imagePreview">
+                                  <img [src]="imagePreview" alt="Image Preview" style="max-width: 200px; max-height: 200px;">
+                              </div>
+                          </div>
+  
+                      </div>
+                  </div>
+  
+                  <!-- Submit Button -->
+                  <button class="nextBtn" type="submit" [disabled]="userForm.invalid || !user.photo || isLoading">
+                      <span class="btnText">submit</span>
+                      <i class="uil uil-navigator"></i>
+                  </button>
+              </div>
+          </form>
+  
+         
+          <div *ngIf="responseMessage" class="response-message">
+              {{ responseMessage }}
+          </div>
+  
+          
+          <div *ngIf="isLoading" class="loading-indicator">
+            <div class="spinner"></div>
+            <p>Submitting...</p>
+          </div>
+      </div>
+      </div>
+     </div>
+    <div *ngIf="activeSection === 'users'">
+
+      <!-- Filter Section -->
+      <div *ngIf="!isLoading && filteredUsers.length > 0" class="filter-section">
+        <label for="specialtyFilter">Filter by Specialty:</label>
+        <select id="specialtyFilter" [(ngModel)]="selectedSpecialty" (change)="filterUsers()">
+          <option value="">All</option>
+          <option value="generaliste">Generalist</option>
+          <option value="cardiologie">Cardiologist</option>
+        </select>
+      </div>
+
+      <!-- Doctors Display -->
+      <div class="doctors-container">
+        <div *ngFor="let user of filteredUsers" class="doctor-card">
+
+          <!-- User Photo -->
+          <img [src]="'http://localhost:5000' + user.photo" alt="User Photo" class="doctor-image" />
+
+          <!-- User Info -->
+          <div class="doctor-info">
+            <h3>{{ user.name }}</h3>
+            <p>{{ user.specialty }}</p>
+            <p>{{ user.email }}</p>
+            <p>Status: {{ user.isSuspended ? 'Suspended' : 'Active' }}</p>
+          </div>
+
+          <!-- Admin Actions -->
+          <div class="admin-actions">
+            <button class="nav-link-1" (click)="onModify(user)">✏️ Modify</button>
+            <button class="nav-link-1" (click)="onDelete(user)">🗑️ Delete</button>
+            <button class="nav-link-1" (click)="onToggleSuspend(user)">
+              {{ user.isSuspended ? '🔓 Reactivate' : '⛔ Suspend' }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
