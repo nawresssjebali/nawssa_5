@@ -1,27 +1,26 @@
-# Use Node 18.x (or another LTS version)
+# Use a smaller, Alpine-based Node.js 18.19.1 image
 FROM node:18.19.1-alpine
 
+# Set the working directory inside the container
+WORKDIR /usr/src/app
 
-# Set home directory for the app
-ENV HOME=/home/app
+# Copy package files for dependency installation
+COPY package*.json ./
 
-# Install utilities like htop without recommendations to keep the image slim
+# Install only production dependencies to reduce size
+RUN npm install --production
 
+# Copy the rest of your source code
+COPY . .
 
-# Copy the entire project first (including Backend folder and package files)
-COPY . $HOME/
+# Define production environment variable
+ENV NODE_ENV=production
 
-# Set working directory to the root (where package.json is)
-WORKDIR $HOME
-
-# Install dependencies from package.json (in $HOME)
-RUN npm install --legacy-peer-deps --verbose
-
-# Set working directory to Backend (where server.js lives)
-WORKDIR $HOME/Backend
-
-# Expose app port
+# Expose your app's port (change if not 3000)
 EXPOSE 5000
+
+# Start the app (update this if you don’t use server.js directly)
+CMD ["npm", "start"]
 
 # Start the app using the "start" script defined in package.json
 CMD ["npm", "start"]
