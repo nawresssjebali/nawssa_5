@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends htop && apt-get
 COPY package.json $HOME/
 
 # Optional: copy package-lock.json if you have one
-# COPY package-lock.json $HOME/
+COPY package-lock.json $HOME/
 
 # Install dependencies from package.json (in $HOME)
 WORKDIR $HOME
