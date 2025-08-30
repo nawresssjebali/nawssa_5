@@ -1,4 +1,4 @@
-# Use Node 18.x (or another LTS version that matches your engines field)
+# Use Node 18.x (or another LTS version)
 FROM node:18.19.1
 
 # Set home directory for the app
@@ -7,21 +7,25 @@ ENV HOME=/home/app
 # Install utilities like htop without recommendations to keep the image slim
 RUN apt-get update && apt-get install -y --no-install-recommends htop && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy the entire Backend folder (including package files)
-COPY Backend/ $HOME/Backend/
+# Copy package.json from the project root
+COPY package.json $HOME/
 
-# Set working directory to Backend folder
-WORKDIR $HOME/Backend
+# Optional: copy package-lock.json if you have one
+# COPY package-lock.json $HOME/
 
-# Install dependencies silently
+# Install dependencies from package.json (in $HOME)
+WORKDIR $HOME
 RUN npm install --legacy-peer-deps --verbose
 
-# Expose port 5000 for the app
+# Copy your application code (Backend folder)
+COPY Backend/ $HOME/Backend/
+
+# Set the working directory to Backend (where server.js lives)
+WORKDIR $HOME/Backend
+
+# Expose app port
 EXPOSE 5000
 
-# Optional: Run the build step if needed
-# RUN npm run build --prod
-
-# Start the app (if "start" script is defined in package.json)
+# Start the app using the "start" script defined in package.json
 CMD ["npm", "start"]
 
