@@ -8,7 +8,8 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install only production dependencies to reduce size
-RUN npm install --production
+RUN npm install --production --legacy-peer-deps
+
 
 # Copy the rest of your source code
 COPY . .
