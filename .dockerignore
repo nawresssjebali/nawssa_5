@@ -1,6 +1,9 @@
-node_modules
-.git
-Dockerfile
-.dockerignore
-README.md
-npm-debug.log
+**/node_modules/
+**/node_modules_linux/
+**/Dockerfile
+**/.dockerignore
+**/.gitignore
+**/.git
+**/README.md
+**/LICENSE
+**/.vscode
