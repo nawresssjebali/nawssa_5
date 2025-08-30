@@ -1,11 +1,12 @@
 # Use Node 18.x (or another LTS version)
-FROM node:18.19.1
+FROM node:18.19.1-alpine
+
 
 # Set home directory for the app
 ENV HOME=/home/app
 
 # Install utilities like htop without recommendations to keep the image slim
-RUN apt-get update && apt-get install -y --no-install-recommends htop && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
 # Copy the entire project first (including Backend folder and package files)
 COPY . $HOME/
