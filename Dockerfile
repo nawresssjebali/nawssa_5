@@ -14,7 +14,8 @@ COPY package.json package-lock.json $HOME/Backend/
 WORKDIR $HOME/Backend
 
 # Install dependencies silently
-RUN npm install --verbose
+RUN npm install --legacy-peer-deps --verbose
+
 
 
 # Copy the rest of the project files (Backend folder)
