@@ -1,1 +1,27 @@
 
+# Stage 1: Build Angular app
+FROM node:18.13.0 as build
+
+WORKDIR /app
+
+# Copy and install dependencies
+COPY package*.json ./
+RUN npm install
+RUN npm install -g @angular/cli
+
+# Copy rest of the code
+COPY . .
+
+# Build Angular app (production mode)
+RUN ng build --configuration=production
+
+# Stage 2: Use Nginx to serve app
+FROM nginx:alpine
+
+# Copy build output from stage 1 to Nginx html folder
+COPY --from=build /app/dist/aftas-angular /usr/share/nginx/html
+
+EXPOSE 80
+
+# Keep Nginx running
+CMD ["nginx", "-g", "daemon off;"]
