@@ -20,8 +20,7 @@ ENV NODE_ENV=production
 # Expose your app's port (change if not 3000)
 EXPOSE 5000
 
-# Start the app (update this if you don’t use server.js directly)
-CMD ["npm", "start"]
+
 
 # Start the app using the "start" script defined in package.json
 CMD ["npm", "start"]
