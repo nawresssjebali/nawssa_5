@@ -356,12 +356,6 @@ app.post("/admin/force-logout/:userId", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-export function getPrerenderParams(route: string) {
-  if (route.startsWith('/reset-password/')) {
-    return [{ token: 'dummy-token' }]; // ou une liste de tokens valides
-  }
-  return [];
-}
 
 
 // API Route to Send Password Reset Link (Email)
