@@ -47,4 +47,4 @@ EXPOSE 4000
 
 
 # Run Express SSR server
-CMD ["node", "dist/server.js"]
+CMD ["node", "src/server.js"]
