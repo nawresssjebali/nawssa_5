@@ -19,8 +19,12 @@ const app = express();
 const serverTime = moment().tz('Africa/Tunis').format();
 console.log('Server time (Tunisia):', serverTime);
 
-const server = http.createServer(app);
-fs.writeFileSync(path.join(__dirname, "ECGS/test.txt"), "Hello World");
+const ecgsDir = path.join(__dirname, 'ECGS');
+if (!fs.existsSync(ecgsDir)) {
+  fs.mkdirSync(ecgsDir, { recursive: true }); // create folder if missing
+}
+
+fs.writeFileSync(path.join(ecgsDir, 'test.txt'), 'Hello World');
 
 
 
