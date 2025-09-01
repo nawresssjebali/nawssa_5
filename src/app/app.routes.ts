@@ -32,6 +32,8 @@ export const routes: Routes = [
   { path: 'support-chat', component: SupportChatComponent },
   { path: 'account-activity', component: AccountActivityComponent },
   { path: 'help/sharing-guidelines', component: SharingGuidelinesComponent },
+  { path: 'reset-password/:token', component: ResetPasswordComponent, data: { prerender: false } },
+
   
 
 ];
