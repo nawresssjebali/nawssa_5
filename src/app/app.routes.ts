@@ -14,26 +14,22 @@ import { Enable2faComponent } from './enable2fa/enable2fa.component';
 import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin.component';
 
 export const routes: Routes = [
-  { path: '', component: LoginComponent },   // Default route (Login)
-  { path: 'register', component: RegisterComponent }, 
-  { path: 'login', component: LoginComponent }, // Registration page
-// Dashboard after login
+  { path: '', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent },
 
-  { path: 'dashboard-medecin-generaliste', component: DashboardMedecinGeneralisteComponent ,
-    canActivate: [AuthGuard]}, // Dashboard for generaliste
+  { path: 'dashboard-medecin-generaliste', component: DashboardMedecinGeneralisteComponent, canActivate: [AuthGuard] },
   { path: 'dashboard-medecin-cardiologue', component: DashboardMedecinCardiologueComponent, canActivate: [AuthGuard] },
-   { path: 'dashboard-admin', component: DashboardAdminComponent , canActivate: [AuthGuard]},
+  { path: 'dashboard-admin', component: DashboardAdminComponent, canActivate: [AuthGuard] },
 
-  { path: 'forget-me', component: ForgetMeComponent }, // Dashboard for cardiologue
-  //{ path: '**', redirectTo: '', pathMatch: 'full' },
-  { // Wildcard route for undefined paths (404)
+  { path: 'forget-me', component: ForgetMeComponent },
   { path: 'change-password', component: ChangePasswordComponent },
   { path: 'enable-2fa', component: Enable2faComponent },
   { path: 'support-chat', component: SupportChatComponent },
   { path: 'account-activity', component: AccountActivityComponent },
   { path: 'help/sharing-guidelines', component: SharingGuidelinesComponent },
-  { path: 'reset-password/:token', component: ResetPasswordComponent, data: { prerender: false } },
+  { path: 'reset-password/:token', component: ResetPasswordComponent, data: { prerender: false } }
 
-  
-
+  // Tu peux ajouter un wildcard pour rediriger les routes inconnues
+  // { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
