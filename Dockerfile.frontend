@@ -29,7 +29,9 @@ COPY . .
 ENV NODE_OPTIONS=--max_old_space_size=4096
 
 # Build Angular app (production mode)
-RUN ng build --configuration=production
+
+RUN ng build --configuration=production --output-path=dist/aftas-angular
+
 
 # Stage 2: Use Nginx to serve app
 FROM nginx:alpine
