@@ -26,7 +26,7 @@ export const routes: Routes = [
 
   { path: 'forget-me', component: ForgetMeComponent }, // Dashboard for cardiologue
   //{ path: '**', redirectTo: '', pathMatch: 'full' },
-  { path: 'reset-password/:token', component: ResetPasswordComponent }, // Wildcard route for undefined paths (404)
+  { // Wildcard route for undefined paths (404)
   { path: 'change-password', component: ChangePasswordComponent },
   { path: 'enable-2fa', component: Enable2faComponent },
   { path: 'support-chat', component: SupportChatComponent },
