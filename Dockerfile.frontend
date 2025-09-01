@@ -1,12 +1,11 @@
-
 # Stage 1: Build Angular app
-FROM node:18.13.0 as build
+FROM node:18-bullseye as build   # full Debian image, avoids alpine build issues
 
 WORKDIR /app
 
 # Copy and install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 RUN npm install -g @angular/cli
 
 # Copy rest of the code
@@ -23,5 +22,5 @@ COPY --from=build /app/dist/aftas-angular /usr/share/nginx/html
 
 EXPOSE 80
 
-# Keep Nginx running
 CMD ["nginx", "-g", "daemon off;"]
+
