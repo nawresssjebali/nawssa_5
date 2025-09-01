@@ -3,7 +3,7 @@ FROM node:20-bullseye AS build
 
 WORKDIR /app
 
-# Install system dependencies for building
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
@@ -18,18 +18,33 @@ RUN npm install --legacy-peer-deps
 RUN npm install rxjs --legacy-peer-deps
 RUN npm install -g @angular/cli@latest typescript
 
-# Copy the rest of the source code
+# Copy the rest of the code
 COPY . .
 
-# Increase Node memory to avoid build crashes
+# Increase Node memory
 ENV NODE_OPTIONS=--max_old_space_size=4096
 
 # Build Angular app (client + server)
 RUN ng build --configuration=production
 RUN ng run projet_pfe_nawress_jebali:server:production
 
+# Create temporary tsconfig for server.ts compilation
+RUN echo '{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "dist/src"
+  },
+  "include": ["src/server.ts"]
+}' > tsconfig.server.json
+
 # Compile server.ts to JavaScript
-RUN npx tsc src/server.ts --outDir dist/src
+RUN npx tsc -p tsconfig.server.json
 
 # Stage 2: Run Angular Universal server
 FROM node:20-bullseye
@@ -38,7 +53,7 @@ WORKDIR /app
 
 # Copy Angular build
 COPY --from=build /app/dist/projet_pfe_nawress_jebali /app/dist/projet_pfe_nawress_jebali
-# Copy compiled server
+# Copy compiled server.js
 COPY --from=build /app/dist/src/server.js /app/dist/src/server.js
 # Copy package.json
 COPY package*.json ./
@@ -46,8 +61,9 @@ COPY package*.json ./
 # Install only production dependencies
 RUN npm install --legacy-peer-deps --omit=dev
 
-# Expose the port Node will run on
+# Expose the port
 EXPOSE 4000
 
-# Run the compiled server
+# Run the server
 CMD ["node", "dist/src/server.js"]
+
