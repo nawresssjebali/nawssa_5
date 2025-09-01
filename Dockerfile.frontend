@@ -1,9 +1,9 @@
 # Stage 1: Build Angular app (using full Debian image)
-FROM node:18-bullseye AS build
+FROM node:20-bullseye AS build
 
 WORKDIR /app
 
-# Install system dependencies required for building Angular packages
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
@@ -22,7 +22,7 @@ RUN npm install -g @angular/cli@latest
 # Copy rest of the code
 COPY . .
 
-# Ensure correct Node environment
+# Increase Node memory limit
 ENV NODE_OPTIONS=--max_old_space_size=4096
 
 # Build Angular app (production mode)
@@ -37,3 +37,4 @@ COPY --from=build /app/dist/aftas-angular /usr/share/nginx/html
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
+
