@@ -1,15 +1,29 @@
-# Stage 1: Build Angular app (using full Debian image, avoids alpine build issues)
+# Stage 1: Build Angular app (using full Debian image)
 FROM node:18-bullseye AS build
 
 WORKDIR /app
 
-# Copy and install dependencies
+# Install system dependencies required for building Angular packages
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy package.json and package-lock.json first for caching
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install --legacy-peer-deps
-RUN npm install -g @angular/cli
+
+# Install Angular CLI globally
+RUN npm install -g @angular/cli@latest
 
 # Copy rest of the code
 COPY . .
+
+# Ensure correct Node environment
+ENV NODE_OPTIONS=--max_old_space_size=4096
 
 # Build Angular app (production mode)
 RUN ng build --configuration=production
@@ -23,4 +37,3 @@ COPY --from=build /app/dist/aftas-angular /usr/share/nginx/html
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
-
