@@ -2,7 +2,7 @@
   "name": "projet-pfe-nawress-jebali",
   "version": "1.0.0",
   "scripts": {
-    "start": "node server.js",
+     "start": "node Backend/server.js",
     "build": "ng build --configuration=production",
     "serve": "ng serve",
     "build:ssr": "ng run projet-pfe-nawress-jebali:server:production",
