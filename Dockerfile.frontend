@@ -16,6 +16,9 @@ COPY package*.json ./
 # Install dependencies (handle peer deps)
 RUN npm install --legacy-peer-deps
 
+# Ensure rxjs is installed explicitly
+RUN npm install rxjs --legacy-peer-deps
+
 # Install Angular CLI globally
 RUN npm install -g @angular/cli@latest
 
@@ -39,4 +42,3 @@ EXPOSE 80
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
-
