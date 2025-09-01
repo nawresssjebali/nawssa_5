@@ -29,12 +29,7 @@
               "src/styles.css",
               "node_modules/ngx-toastr/toastr.css"
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -89,6 +84,33 @@
             "styles": ["src/styles.css"],
             "scripts": []
           }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/projet_pfe_nawress_jebali-server",
+            "main": "src/main.server.ts",
+            "tsConfig": "tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "sourceMap": false
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "projet_pfe_nawress_jebali:build:production",
+            "serverTarget": "projet_pfe_nawress_jebali:server:production",
+            "routes": [
+              "/",
+              "/login",
+              "/dashboard"
+            ]
+          }
         }
       }
     }
@@ -97,3 +119,4 @@
     "analytics": "b03f8491-8da7-4c52-a26c-c1fc042db9bc"
   }
 }
+
