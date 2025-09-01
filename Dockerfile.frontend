@@ -1,5 +1,5 @@
-# Stage 1: Build Angular app
-FROM node:18-bullseye as build   # full Debian image, avoids alpine build issues
+# Stage 1: Build Angular app (using full Debian image, avoids alpine build issues)
+FROM node:18-bullseye AS build
 
 WORKDIR /app
 
