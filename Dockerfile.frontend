@@ -1,46 +1,47 @@
-# Stage 1: Build Angular app (using full Debian image)
+# Stage 1: Build Angular app (client + server)
 FROM node:20-bullseye AS build
 
 WORKDIR /app
 
-# Install system dependencies for building native modules
+# Installer dépendances système pour build
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy package.json and package-lock.json first for caching
+# Copier package.json pour caching
 COPY package*.json ./
 
-# Install dependencies (handle peer deps)
+# Installer dépendances
 RUN npm install --legacy-peer-deps
-
-# Ensure rxjs is installed explicitly
 RUN npm install rxjs --legacy-peer-deps
-
-# Install Angular CLI globally
 RUN npm install -g @angular/cli@latest
 
-# Copy rest of the application code
+# Copier le reste du code
 COPY . .
 
-# Increase Node memory limit to avoid build crashes
+# Augmenter mémoire Node pour éviter crash build
 ENV NODE_OPTIONS=--max_old_space_size=4096
 
-# Build Angular app (production mode)
+# Build Angular app (client + server)
+RUN ng build --configuration=production
+RUN ng run projet_pfe_nawress_jebali:server:production
 
-RUN ng build --configuration=production --output-path=dist/aftas-angular
+# Stage 2: Run Angular Universal server
+FROM node:20-bullseye
 
+WORKDIR /app
 
-# Stage 2: Use Nginx to serve app
-FROM nginx:alpine
+# Copier les builds client + server depuis l'étape précédente
+COPY --from=build /app/dist/projet_pfe_nawress_jebali /app/dist/projet_pfe_nawress_jebali
+COPY package*.json ./
 
-# Copy built Angular app from Stage 1
-COPY --from=build /app/dist/aftas-angular /usr/share/nginx/html
+# Installer uniquement les dépendances nécessaires pour production
+RUN npm install --legacy-peer-deps --omit=dev
 
-# Expose port 80
-EXPOSE 80
+# Exposer le port Node
+EXPOSE 4000
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Lancer le serveur Angular Universal
+CMD ["node", "dist/projet_pfe_nawress_jebali/server/main.js"]
