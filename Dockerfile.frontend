@@ -1,40 +1,46 @@
-# Stage 1: Build Angular app + compile server.ts
+this is my dockerfile # Stage 1: Build Angular app (client + server)
 FROM node:20-bullseye AS build
+
 WORKDIR /app
 
-# System deps
-RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
+# Install system dependencies for building
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy package.json and install deps
+# Copy package.json for caching
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
-RUN npm install -g @angular/cli@latest typescript
 
-# Copy source code
+# Install dependencies
+RUN npm install --legacy-peer-deps
+RUN npm install rxjs --legacy-peer-deps
+RUN npm install -g @angular/cli@latest
+
+# Copy the rest of the source code
 COPY . .
 
-# Increase Node memory
+# Increase Node memory to avoid build crashes
 ENV NODE_OPTIONS=--max_old_space_size=4096
 
-# Build Angular client and server
+# Build Angular app (client + server)
 RUN ng build --configuration=production
 RUN ng run projet_pfe_nawress_jebali:server:production
 
-# Compile server.ts
-RUN npx tsc src/server.ts --outDir dist
-
-# Stage 2: Run
+# Stage 2: Run Angular Universal server
 FROM node:20-bullseye
+
 WORKDIR /app
 
-# Copy built Angular server and compiled server.js
-COPY --from=build /app/dist/projet_pfe_nawress_jebali /app/dist/projet_pfe_nawress_jebali
-COPY --from=build /app/dist/server.js ./dist/server.js
+# Copy server build from previous stage
+COPY --from=build /app/dist/projet_pfe_nawress_jebali-server /app/dist/projet_pfe_nawress_jebali-server
 COPY package*.json ./
 
-# Install only production deps
+# Install only production dependencies
 RUN npm install --legacy-peer-deps --omit=dev
 
+# Expose the port your server will run on
 EXPOSE 4000
 
 # Run Express SSR server
