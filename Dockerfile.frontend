@@ -3,25 +3,25 @@ FROM node:20-bullseye AS build
 
 WORKDIR /app
 
-# Installer dépendances système pour build
+# Install system dependencies for building
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Copier package.json pour caching
+# Copy package.json for caching
 COPY package*.json ./
 
-# Installer dépendances
+# Install dependencies
 RUN npm install --legacy-peer-deps
 RUN npm install rxjs --legacy-peer-deps
 RUN npm install -g @angular/cli@latest
 
-# Copier le reste du code
+# Copy the rest of the source code
 COPY . .
 
-# Augmenter mémoire Node pour éviter crash build
+# Increase Node memory to avoid build crashes
 ENV NODE_OPTIONS=--max_old_space_size=4096
 
 # Build Angular app (client + server)
@@ -33,15 +33,15 @@ FROM node:20-bullseye
 
 WORKDIR /app
 
-# Copier les builds client + server depuis l'étape précédente
-COPY --from=build /app/dist/projet_pfe_nawress_jebali /app/dist/projet_pfe_nawress_jebali
+# Copy server build from previous stage
+COPY --from=build /app/dist/projet_pfe_nawress_jebali-server /app/dist/projet_pfe_nawress_jebali-server
 COPY package*.json ./
 
-# Installer uniquement les dépendances nécessaires pour production
+# Install only production dependencies
 RUN npm install --legacy-peer-deps --omit=dev
 
-# Exposer le port Node
+# Expose the port your server will run on
 EXPOSE 4000
 
-# Lancer le serveur Angular Universal
-CMD ["node", "dist/projet_pfe_nawress_jebali/server/main.js"]
+# Run Angular Universal server
+CMD ["node", "dist/projet_pfe_nawress_jebali-server/main.js"]
