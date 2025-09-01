@@ -3,48 +3,51 @@ FROM node:20-bullseye AS build
 
 WORKDIR /app
 
-# Installer dépendances système pour build
+# Install system dependencies for building
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Copier package.json pour caching
+# Copy package.json for caching
 COPY package*.json ./
 
-# Installer dépendances
+# Install dependencies
 RUN npm install --legacy-peer-deps
 RUN npm install rxjs --legacy-peer-deps
-RUN npm install -g @angular/cli@latest
+RUN npm install -g @angular/cli@latest typescript
 
-# Copier le reste du code
+# Copy the rest of the source code
 COPY . .
 
-# Augmenter mémoire Node pour éviter crash build
+# Increase Node memory to avoid build crashes
 ENV NODE_OPTIONS=--max_old_space_size=4096
 
 # Build Angular app (client + server)
 RUN ng build --configuration=production
 RUN ng run projet_pfe_nawress_jebali:server:production
 
+# Compile server.ts to JavaScript
+RUN npx tsc src/server.ts --outDir dist/src
+
 # Stage 2: Run Angular Universal server
 FROM node:20-bullseye
 
 WORKDIR /app
 
-# Copier les builds client + server depuis l'étape précédente
+# Copy Angular build
 COPY --from=build /app/dist/projet_pfe_nawress_jebali /app/dist/projet_pfe_nawress_jebali
+# Copy compiled server
+COPY --from=build /app/dist/src/server.js /app/dist/src/server.js
+# Copy package.json
 COPY package*.json ./
 
-# Installer uniquement les dépendances nécessaires pour production
+# Install only production dependencies
 RUN npm install --legacy-peer-deps --omit=dev
 
-# Exposer le port Node
+# Expose the port Node will run on
 EXPOSE 4000
 
-# Lancer le serveur Angular Universal
-
-
-# Run Express SSR server
-CMD ["node", "src/server.js"]
+# Run the compiled server
+CMD ["node", "dist/src/server.js"]
