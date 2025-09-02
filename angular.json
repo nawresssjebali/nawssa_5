@@ -38,8 +38,7 @@
   "options": {
     "outputPath": "dist/projet_pfe_nawress_jebali-server",
     "main": "src/main.server.ts",
-    "tsConfig": "tsconfig.server.json",
-    "bundleDependencies": "all"
+    "tsConfig": "tsconfig.server.json"
   },
   "configurations": {
     "production": { "optimization": true, "sourceMap": false },
