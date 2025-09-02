@@ -32,6 +32,6 @@ RUN npm install --legacy-peer-deps --omit=dev
 
 EXPOSE 4000
 
-# Correct server entry point
-CMD ["node", "dist/projet_pfe_nawress_jebali-server/server.js"]
+CMD ["node", "dist/projet_pfe_nawress_jebali-server/main.js"]
+
 
