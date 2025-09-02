@@ -14,7 +14,7 @@ services:
   # Node.js backend
   backend_node:
     build:
-      context: ./node_app
+      context: .                   # root folder as context
       dockerfile: Dockerfile.backend_node
     container_name: backend_node
     restart: always
@@ -28,7 +28,7 @@ services:
   # Flask backend
   backend_flask:
     build:
-      context: ./flask_app
+      context: .                   # root folder as context
       dockerfile: Dockerfile.backend_flask
     container_name: backend_flask
     restart: always
@@ -40,7 +40,7 @@ services:
   # Angular frontend
   frontend:
     build:
-      context: ./angular_app
+      context: .                   # root folder as context
       dockerfile: Dockerfile.frontend
     container_name: frontend
     restart: always
