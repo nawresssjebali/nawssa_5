@@ -54,8 +54,8 @@ app.use('/**', (req, res, next) => {
  * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
  */
 if (isMainModule(import.meta.url)) {
-  // Convert environment variable to number to satisfy TypeScript
-  const port: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
+  // ✅ Use bracket notation for environment variable to satisfy TS4111
+  const port: number = process.env['PORT'] ? parseInt(process.env['PORT'], 10) : 4000;
 
   // ⚠ Critical for Docker: listen on 0.0.0.0
   app.listen(port, '0.0.0.0', () => {
