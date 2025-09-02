@@ -12,7 +12,7 @@ RUN npm install rxjs --legacy-peer-deps
 RUN npm install -g @angular/cli@19.2.4
 
 # Ensure Universal dependencies are installed
-RUN npm install @nguniversal/express-engine@18 @nguniversal/builders@18 --legacy-peer-deps
+RUN npm install @nguniversal/express-engine@16 @nguniversal/builders@16 --legacy-peer-deps
 
 
 COPY . .
