@@ -35,6 +35,7 @@ WORKDIR /app
 
 # Copier les builds client + server depuis l'étape précédente
 COPY --from=build /app/dist/projet_pfe_nawress_jebali /app/dist/projet_pfe_nawress_jebali
+COPY --from=build /app/dist/projet_pfe_nawress_jebali-server /app/dist/projet_pfe_nawress_jebali-server
 COPY package*.json ./
 
 # Installer uniquement les dépendances nécessaires pour production
@@ -45,5 +46,4 @@ EXPOSE 4000
 
 # Lancer le serveur Angular Universal
 CMD ["node", "dist/projet_pfe_nawress_jebali-server/main.js"]
-
 
