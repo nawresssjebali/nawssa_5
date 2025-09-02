@@ -44,6 +44,7 @@ RUN npm install --legacy-peer-deps --omit=dev
 # Exposer le port Node
 EXPOSE 4000
 
-# Lancer le serveur Angular Universal
-CMD ["node", "dist/projet_pfe_nawress_jebali-server/main.js"]
+# ⚠ Lancer le serveur Angular Universal correct
+CMD ["node", "dist/projet_pfe_nawress_jebali-server/server.js"]
+
 
