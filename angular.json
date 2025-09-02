@@ -15,7 +15,7 @@
           "options": {
             "outputPath": "dist/projet_pfe_nawress_jebali",
             "index": "src/index.html",
-            "browser": "src/main.ts",
+            "main": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": [
@@ -56,12 +56,30 @@
           "defaultConfiguration": "production"
         },
         "server": {
-  "builder": "@angular-devkit/build-angular:server",
-  "options": {
-    "outputPath": "dist/projet_pfe_nawress_jebali-server",
-    "main": "src/server.ts",
-    "tsConfig": "tsconfig.server.json"
-  },
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/projet_pfe_nawress_jebali-server",
+            "main": "src/main.server.ts",
+            "tsConfig": "tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "sourceMap": false
+            },
+            "development": {
+              "optimization": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "projet_pfe_nawress_jebali:build:production"
+            },
             "development": {
               "buildTarget": "projet_pfe_nawress_jebali:build:development"
             }
@@ -86,31 +104,12 @@
             "scripts": []
           }
         },
-        "server": {
-          "builder": "@angular-devkit/build-angular:server",
-          "options": {
-            "outputPath": "dist/projet_pfe_nawress_jebali-server",
-            "main": "src/main.server.ts",
-            "tsConfig": "tsconfig.server.json"
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "sourceMap": false
-            }
-          },
-          "defaultConfiguration": "production"
-        },
         "prerender": {
           "builder": "@nguniversal/builders:prerender",
           "options": {
             "browserTarget": "projet_pfe_nawress_jebali:build:production",
             "serverTarget": "projet_pfe_nawress_jebali:server:production",
-            "routes": [
-              "/",
-              "/login",
-              "/dashboard"
-            ]
+            "routes": ["/", "/login", "/dashboard"]
           }
         }
       }
@@ -120,4 +119,3 @@
     "analytics": "b03f8491-8da7-4c52-a26c-c1fc042db9bc"
   }
 }
-
