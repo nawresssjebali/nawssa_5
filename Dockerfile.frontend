@@ -17,7 +17,10 @@ ENV NODE_OPTIONS=--max_old_space_size=4096
 
 # Build client & server
 RUN ng build --configuration=production
-RUN ng run projet_pfe_nawress_jebali:server:production
+RUN ng build --project projet_pfe_nawress_jebali --configuration production
+RUN ng build --project projet_pfe_nawress_jebali --configuration production --output-hashing=none
+RUN ng build --project projet_pfe_nawress_jebali-server --configuration production
+
 
 # Stage 2: Run Angular Universal server
 FROM node:20-bullseye
