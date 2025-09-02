@@ -15,12 +15,11 @@ COPY . .
 
 ENV NODE_OPTIONS=--max_old_space_size=4096
 
-# Build client & server
-RUN ng build --configuration=production
-RUN ng build --project projet_pfe_nawress_jebali --configuration production
-RUN ng build --project projet_pfe_nawress_jebali --configuration production --output-hashing=none
-RUN ng build --project projet_pfe_nawress_jebali-server --configuration production
+# Build client
+RUN ng build projet_pfe_nawress_jebali --configuration production
 
+# Build server (Angular Universal)
+RUN ng run projet_pfe_nawress_jebali:server:production
 
 # Stage 2: Run Angular Universal server
 FROM node:20-bullseye
@@ -36,5 +35,4 @@ RUN npm install --legacy-peer-deps --omit=dev
 EXPOSE 4000
 
 CMD ["node", "dist/projet_pfe_nawress_jebali-server/main.js"]
-
 
