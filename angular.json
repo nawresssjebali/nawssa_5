@@ -33,21 +33,19 @@
           },
           "defaultConfiguration": "production"
         },
-       "server": {
-  "builder": "@angular-devkit/build-angular:server",
-  "options": {
-    "outputPath": "dist/projet_pfe_nawress_jebali-server",
-    "main": "src/main.server.ts",
-    "tsConfig": "tsconfig.server.json",
-    "index": "src/index.html"
-  },
-  "configurations": {
-    "production": { "optimization": true, "sourceMap": false },
-    "development": { "optimization": false, "sourceMap": true }
-  },
-  "defaultConfiguration": "production"
-},
-
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/projet_pfe_nawress_jebali-server",
+            "main": "src/main.server.ts",
+            "tsConfig": "tsconfig.server.json"
+          },
+          "configurations": {
+            "production": { "optimization": true, "sourceMap": false },
+            "development": { "optimization": false, "sourceMap": true }
+          },
+          "defaultConfiguration": "production"
+        },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
