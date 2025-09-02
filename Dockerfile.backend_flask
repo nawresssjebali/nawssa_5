@@ -1,18 +1,15 @@
 FROM python:3.9-slim-buster
-
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0
-ENV FLASK_RUN_PORT=3000
-
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
-
+# Copy all Flask code
 COPY . .
 
+# Install required packages directly
+RUN pip install --upgrade pip \
+    && pip install flask flask-cors gunicorn requests
+
+# Expose port 3000
 EXPOSE 3000
 
-CMD ["python", "app.py"]
+# Run Flask with Gunicorn on port 3000
+CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
