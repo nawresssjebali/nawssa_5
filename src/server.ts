@@ -54,7 +54,8 @@ app.use('/**', (req, res, next) => {
  * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
  */
 if (isMainModule(import.meta.url)) {
-  const port = process.env['PORT'] || 4000;
+  // Convert environment variable to number to satisfy TypeScript
+  const port: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
 
   // ⚠ Critical for Docker: listen on 0.0.0.0
   app.listen(port, '0.0.0.0', () => {
@@ -66,5 +67,3 @@ if (isMainModule(import.meta.url)) {
  * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
  */
 export const reqHandler = createNodeRequestHandler(app);
-
-
