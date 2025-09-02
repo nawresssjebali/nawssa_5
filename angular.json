@@ -38,7 +38,8 @@
           "options": {
             "outputPath": "dist/projet_pfe_nawress_jebali-server",
             "main": "src/main.server.ts",
-            "tsConfig": "tsconfig.server.json"
+            "tsConfig": "tsconfig.server.json",
+            "clientProject": "projet_pfe_nawress_jebali"
           },
           "configurations": {
             "production": { "optimization": true, "sourceMap": false },
