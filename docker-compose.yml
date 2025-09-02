@@ -1,0 +1,55 @@
+version: '3.9'
+
+services:
+  # MongoDB service
+  mongodb:
+    image: mongo:6
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  # Node.js backend
+  backend_node:
+    build:
+      context: ./node_app
+      dockerfile: Dockerfile.backend_node
+    container_name: backend_node
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/mydatabase
+    depends_on:
+      - mongodb
+
+  # Flask backend
+  backend_flask:
+    build:
+      context: ./flask_app
+      dockerfile: Dockerfile.backend_flask
+    container_name: backend_flask
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+
+  # Angular frontend
+  frontend:
+    build:
+      context: ./angular_app
+      dockerfile: Dockerfile.frontend
+    container_name: frontend
+    restart: always
+    ports:
+      - "4000:4000"
+    depends_on:
+      - backend_node
+      - backend_flask
+
+# Named volume for MongoDB persistence
+volumes:
+  mongo-data:
