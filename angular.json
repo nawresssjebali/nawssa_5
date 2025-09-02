@@ -55,12 +55,13 @@
           },
           "defaultConfiguration": "production"
         },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "buildTarget": "projet_pfe_nawress_jebali:build:production"
-            },
+        "server": {
+  "builder": "@angular-devkit/build-angular:server",
+  "options": {
+    "outputPath": "dist/projet_pfe_nawress_jebali-server",
+    "main": "src/server.ts",
+    "tsConfig": "tsconfig.server.json"
+  },
             "development": {
               "buildTarget": "projet_pfe_nawress_jebali:build:development"
             }
