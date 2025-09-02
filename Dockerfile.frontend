@@ -3,29 +3,18 @@ FROM node:20-bullseye AS build
 
 WORKDIR /app
 
-# Install system dependencies for building native modules
-RUN apt-get update && apt-get install -y \
-    python3 \
-    make \
-    g++ \
+RUN apt-get update && apt-get install -y python3 make g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy package.json and package-lock.json first for caching
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install --legacy-peer-deps
-
-# Install Angular CLI globally (matching project version is safest)
 RUN npm install -g @angular/cli@15
 
-# Copy the rest of the code
 COPY . .
 
-# Increase Node memory to avoid build crashes
 ENV NODE_OPTIONS=--max_old_space_size=4096
 
-# Build Angular app (client + server)
+# Build client & server
 RUN ng build --configuration=production
 RUN ng run projet_pfe_nawress_jebali:server:production
 
@@ -34,16 +23,13 @@ FROM node:20-bullseye
 
 WORKDIR /app
 
-# Copy the builds from previous stage
 COPY --from=build /app/dist/projet_pfe_nawress_jebali /app/dist/projet_pfe_nawress_jebali
 COPY --from=build /app/dist/projet_pfe_nawress_jebali-server /app/dist/projet_pfe_nawress_jebali-server
 COPY package*.json ./
 
-# Install only production dependencies
 RUN npm install --legacy-peer-deps --omit=dev
 
-# Expose the port Angular Universal will use
 EXPOSE 4000
 
-# Start the Angular Universal server (server.js is correct)
+# Correct server entry point
 CMD ["node", "dist/projet_pfe_nawress_jebali-server/server.js"]
