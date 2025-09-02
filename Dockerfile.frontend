@@ -44,5 +44,6 @@ RUN npm install --legacy-peer-deps --omit=dev
 EXPOSE 4000
 
 # Lancer le serveur Angular Universal
-CMD ["node", "dist/projet_pfe_nawress_jebali/server/main.js"]
+CMD ["node", "dist/projet_pfe_nawress_jebali-server/main.js"]
+
 
