@@ -1,17 +1,25 @@
 FROM python:3.9-slim-buster
 
-WORKDIR /app
+# Set working directory inside container
+WORKDIR /app/Backend
 
 # Copy everything into /app
-COPY . .
+COPY . /app
 
-# Install required packages
+# Install system dependencies for OpenCV
+RUN apt-get update && apt-get install -y \
+    libglib2.0-0 \
+    libsm6 \
+    libxrender1 \
+    libxext6 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip and install Python dependencies
 RUN pip install --upgrade pip \
-    && pip install flask flask-cors gunicorn requests
-RUN pip install opencv-python
+    && pip install flask flask-cors gunicorn requests opencv-python
 
 # Expose port 3000
 EXPOSE 3000
 
-# Run Gunicorn pointing to app inside Backend
-CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app", "--chdir", "Backend"]
+# Start Gunicorn
+CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
