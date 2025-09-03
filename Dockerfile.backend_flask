@@ -2,12 +2,12 @@ FROM python:3.9-slim-bookworm
 
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies including libgl1
 RUN apt-get update && apt-get install -y git \
     libglib2.0-0 libsm6 libxrender1 libxext6 libgl1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Clone repo and move Backend content into /app
+# Clone your repo
 RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebali/nawssa_5.git /tmp/nawssa_5 \
     && sh -c 'mv /tmp/nawssa_5/Backend/* /app/ 2>/dev/null || true' \
     && sh -c 'mv /tmp/nawssa_5/Backend/.* /app/ 2>/dev/null || true' \
@@ -15,10 +15,12 @@ RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebal
 
 # Install Python dependencies
 RUN pip install --upgrade pip \
-    && pip install --no-cache-dir flask flask-cors gunicorn requests opencv-python
+    && pip install --no-cache-dir flask flask-cors gunicorn requests opencv-python \
+       joblib numpy pandas scikit-learn
 
 # Expose port
 EXPOSE 3000
 
-# Run Gunicorn pointing to app.py
+# Run Gunicorn
 CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
+
