@@ -16,7 +16,8 @@ RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebal
 # Install Python dependencies including matplotlib
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir flask flask-cors gunicorn requests opencv-python \
-       joblib numpy pandas scikit-learn matplotlib
+       joblib numpy pandas scikit-learn matplotlib beautifulsoup4
+
 
 # Expose port
 EXPOSE 3000
