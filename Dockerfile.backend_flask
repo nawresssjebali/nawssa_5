@@ -13,4 +13,4 @@ RUN pip install --upgrade pip \
 EXPOSE 3000
 
 # Run Gunicorn pointing to app inside Backend
-CMD ["gunicorn", "-b", "0.0.0.0:3000", "Backend.app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app", "--chdir", "Backend"]
