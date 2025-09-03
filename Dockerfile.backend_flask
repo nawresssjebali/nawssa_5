@@ -1,11 +1,10 @@
 # Use official Python slim image
 FROM python:3.9-slim-bookworm
-COPY Backend/ ./
-# Set working directory
+# Set working directory first
 WORKDIR /app
 
 # Copy all Backend files into /app
-
+COPY Backend/ ./  
 
 # Install system dependencies for OpenCV
 RUN apt-get update && apt-get install -y \
