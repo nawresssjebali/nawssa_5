@@ -1,5 +1,5 @@
 # Use official Python slim image
-FROM python:3.9-slim-buster
+FROM python:3.9-slim-bookworm
 
 # Set working directory
 WORKDIR /app/Backend
