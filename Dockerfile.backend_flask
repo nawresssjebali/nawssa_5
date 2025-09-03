@@ -2,10 +2,10 @@
 FROM python:3.9-slim-bookworm
 
 # Set working directory
-WORKDIR /app/Backend
+WORKDIR /app
 
-# Copy the application code
-COPY . .
+# Copy only the Backend folder
+COPY Backend/ ./Backend
 
 # Install system dependencies for OpenCV
 RUN apt-get update && apt-get install -y \
@@ -15,13 +15,16 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and install Python dependencies
+# Install Python dependencies
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir flask flask-cors gunicorn requests opencv-python
 
-# Expose port
+# Expose Flask port
 EXPOSE 3000
 
-# Start Gunicorn
+# Move into Backend
+WORKDIR /app/Backend
+
+# Run with Gunicorn
 CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
-✅ What changed
+
