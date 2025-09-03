@@ -7,11 +7,9 @@ RUN apt-get update && apt-get install -y git \
     libglib2.0-0 libsm6 libxrender1 libxext6 \
     && rm -rf /var/lib/apt/lists/*
 
-# Clone only the Backend folder
 RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebali/nawssa_5.git /tmp/nawssa_5 \
-    && cp -r /tmp/nawssa_5/Backend/. /app/ \
+    && mv /tmp/nawssa_5/Backend/.??* /tmp/nawssa_5/Backend/* /app/ \
     && rm -rf /tmp/nawssa_5
-
 
 # Install Python dependencies
 RUN pip install --upgrade pip \
