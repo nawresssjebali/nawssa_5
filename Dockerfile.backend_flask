@@ -14,10 +14,10 @@ RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebal
     && rm -rf /tmp/nawssa_5
 
 # Install Python dependencies including matplotlib
+# Install Python dependencies including openai
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir flask flask-cors gunicorn requests opencv-python \
-       joblib numpy pandas scikit-learn matplotlib beautifulsoup4
-
+       joblib numpy pandas scikit-learn matplotlib beautifulsoup4 openai
 
 # Expose port
 EXPOSE 3000
