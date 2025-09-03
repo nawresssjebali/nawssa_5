@@ -7,8 +7,10 @@ RUN apt-get update && apt-get install -y git \
     libglib2.0-0 libsm6 libxrender1 libxext6 \
     && rm -rf /var/lib/apt/lists/*
 
-# Clone repo directly
-RUN git clone -b main https://github.com/nawresssjebali/nawssa_5.git /app
+# Clone only the Backend folder
+RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebali/nawssa_5.git /tmp/nawssa_5 \
+    && mv /tmp/nawssa_5/Backend /app \
+    && rm -rf /tmp/nawssa_5
 
 # Install Python dependencies
 RUN pip install --upgrade pip \
@@ -17,5 +19,5 @@ RUN pip install --upgrade pip \
 # Expose port
 EXPOSE 3000
 
-# Run Gunicorn
-CMD ["gunicorn", "-b", "0.0.0.0:3000", "Backend.app:app"]
+# Run Gunicorn pointing to app.py
+CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
