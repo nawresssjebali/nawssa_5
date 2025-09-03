@@ -13,8 +13,6 @@ RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebal
     && sh -c 'mv /tmp/nawssa_5/Backend/.* /app/ 2>/dev/null || true' \
     && rm -rf /tmp/nawssa_5
 
-# Install Python dependencies including matplotlib
-# Install Python dependencies including openai
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir \
        flask \
@@ -41,7 +39,10 @@ RUN pip install --upgrade pip \
        chromadb \
        llama-index \
        ragas \
+       datasets \
+       evaluate \
        unstructured \
+       python-dotenv \
        werkzeug
 
 # Expose port
