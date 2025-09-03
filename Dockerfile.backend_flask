@@ -4,8 +4,8 @@ FROM python:3.9-slim-bookworm
 # Set working directory
 WORKDIR /app
 
-# Copy only the Backend folder
-COPY Backend/ ./Backend
+# Copy all Backend files into /app
+COPY Backend/ ./
 
 # Install system dependencies for OpenCV
 RUN apt-get update && apt-get install -y \
@@ -22,8 +22,7 @@ RUN pip install --upgrade pip \
 # Expose Flask port
 EXPOSE 3000
 
-# Move into Backend
-WORKDIR /app/Backend
+
 
 # Run with Gunicorn
 CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
