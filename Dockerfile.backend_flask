@@ -4,8 +4,8 @@ FROM python:3.9-slim-bookworm
 # Set working directory
 WORKDIR /app/Backend
 
-# Copy only the Backend folder contents
-COPY Backend/ .  
+# Copy the application code
+COPY . .
 
 # Install system dependencies for OpenCV
 RUN apt-get update && apt-get install -y \
@@ -17,11 +17,11 @@ RUN apt-get update && apt-get install -y \
 
 # Upgrade pip and install Python dependencies
 RUN pip install --upgrade pip \
-    && pip install --no-cache-dir flask flask-cors requests opencv-python
+    && pip install --no-cache-dir flask flask-cors gunicorn requests opencv-python
 
 # Expose port
 EXPOSE 3000
 
-# Run your Flask app directly
-ENTRYPOINT ["python"]
-CMD ["app.py"]
+# Start Gunicorn
+CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
+✅ What changed
