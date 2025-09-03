@@ -1,7 +1,8 @@
 FROM python:3.9-slim-bookworm
+
 WORKDIR /app
 
-# Install git
+# Install system dependencies
 RUN apt-get update && apt-get install -y git \
     libglib2.0-0 libsm6 libxrender1 libxext6 \
     && rm -rf /var/lib/apt/lists/*
@@ -13,6 +14,8 @@ RUN git clone -b main https://github.com/nawresssjebali/nawssa_5.git /app
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir flask flask-cors gunicorn requests opencv-python
 
+# Expose port
 EXPOSE 3000
-CMD ["gunicorn", "-b", "0.0.0.0:3000", "Backend.app:app"]
 
+# Run Gunicorn
+CMD ["gunicorn", "-b", "0.0.0.0:3000", "Backend.app:app"]
