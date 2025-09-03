@@ -1,15 +1,16 @@
 FROM python:3.9-slim-buster
+
 WORKDIR /app
 
-# Copy all Flask code
+# Copy everything into /app
 COPY . .
 
-# Install required packages directly
+# Install required packages
 RUN pip install --upgrade pip \
     && pip install flask flask-cors gunicorn requests
 
 # Expose port 3000
 EXPOSE 3000
 
-# Run Flask with Gunicorn on port 3000
-CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
+# Run Gunicorn pointing to app inside Backend
+CMD ["gunicorn", "-b", "0.0.0.0:3000", "Backend.app:app"]
