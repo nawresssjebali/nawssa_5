@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y git \
 
 # Clone only the Backend folder
 RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebali/nawssa_5.git /tmp/nawssa_5 \
-    && mv /tmp/nawssa_5/Backend /app \
+     && mv /tmp/nawssa_5/Backend/* /app/ \
     && rm -rf /tmp/nawssa_5
 
 # Install Python dependencies
