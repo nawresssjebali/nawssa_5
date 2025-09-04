@@ -11,7 +11,7 @@ services:
     volumes:
       - mongo-data:/data/db
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD-SHELL", "nc -z localhost 27017 || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 5
