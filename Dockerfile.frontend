@@ -28,8 +28,8 @@ FROM nginx:alpine
 # Ensure html folder exists
 RUN mkdir -p /usr/share/nginx/html
 
-# Copy built Angular app
-COPY --from=build /app/dist/projet_pfe_nawress_jebali /usr/share/nginx/html
+# Copy built Angular app contents (not folder itself)
+COPY --from=build /app/dist/projet_pfe_nawress_jebali/ /usr/share/nginx/html/
 
 # Copy custom nginx config if needed
 # COPY nginx.conf /etc/nginx/conf.d/default.conf
