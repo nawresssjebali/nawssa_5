@@ -10,19 +10,19 @@ COPY package*.json ./
 # Install only production dependencies to reduce size
 RUN npm install --production --legacy-peer-deps
 
-
 # Copy the rest of your source code
 COPY . .
+
+# Copy wait-for-it script
+COPY wait-for-it.sh /usr/src/app/wait-for-it.sh
+RUN chmod +x /usr/src/app/wait-for-it.sh
 
 # Define production environment variable
 ENV NODE_ENV=production
 
-# Expose your app's port (change if not 3000)
+# Expose your app's port
 EXPOSE 5000
 
-
-
-# Start the app using the "start" script defined in package.json
-CMD ["npm", "start"]
-
+# Start the app using wait-for-it to ensure MongoDB is ready
+CMD ["./wait-for-it.sh", "mongodb:27017", "--", "npm", "start"]
 
