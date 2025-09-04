@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
-# Explicitly install RxJS
+# Install RxJS
 RUN npm install rxjs --legacy-peer-deps
 
 # Install Angular CLI
@@ -19,23 +19,14 @@ COPY . .
 # Avoid memory issues
 ENV NODE_OPTIONS=--max_old_space_size=4096
 
-# Build browser app
+# Build Angular app
 RUN ng build projet_pfe_nawress_jebali --configuration production
 
-# Optional: debug build stage
-RUN ls -la /app/dist/projet_pfe_nawress_jebali
-
-# Stage 2: Serve the Angular app with nginx
+# Stage 2: Serve the Angular app with Nginx
 FROM nginx:alpine
 
-# Ensure html folder exists
-RUN mkdir -p /usr/share/nginx/html
-
-# Copy built Angular app contents safely (all files, not folder)
-COPY --from=build /app/dist/projet_pfe_nawress_jebali/. /usr/share/nginx/html/
-
-# Optional: debug copied files
-RUN ls -la /usr/share/nginx/html
+# Copy built app
+COPY --from=build /app/dist/projet_pfe_nawress_jebali /usr/share/nginx/html
 
 EXPOSE 80
 
