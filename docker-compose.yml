@@ -10,11 +10,16 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # Node.js backend
   backend_node:
     build:
-      context: .                   # root folder as context
+      context: .
       dockerfile: Dockerfile.backend_node
     container_name: backend_node
     restart: always
@@ -23,23 +28,23 @@ services:
     environment:
       - MONGO_URL=mongodb://mongodb:27017/mydatabase
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
 
   # Flask backend
   backend_flask:
     build:
-      context: .                   # root folder as context
+      context: .
       dockerfile: Dockerfile.backend_flask
     container_name: backend_flask
     restart: always
     ports:
       - "3000:3000"
- 
 
   # Angular frontend
   frontend:
     build:
-      context: .                   # root folder as context
+      context: .
       dockerfile: Dockerfile.frontend
     container_name: frontend
     restart: always
