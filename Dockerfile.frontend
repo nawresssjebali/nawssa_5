@@ -10,6 +10,11 @@ RUN apt-get update && apt-get install -y python3 make g++ \
 # Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
+
+# Explicitly install RxJS to ensure it's present
+RUN npm install rxjs --save --legacy-peer-deps
+
+# Install Angular CLI globally
 RUN npm install -g @angular/cli@19.2.4
 
 # Ensure Universal dependencies are installed
