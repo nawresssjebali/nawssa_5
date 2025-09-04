@@ -3,23 +3,25 @@ FROM node:20-bullseye AS build
 
 WORKDIR /app
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y python3 make g++ \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
-RUN npm install rxjs --legacy-peer-deps
 RUN npm install -g @angular/cli@19.2.4
 
 # Ensure Universal dependencies are installed
 RUN npm install @nguniversal/express-engine@16 @nguniversal/builders@16 --legacy-peer-deps
 
-
+# Copy the source code
 COPY . .
 
+# Avoid memory issues
 ENV NODE_OPTIONS=--max_old_space_size=4096
 
-# Build client
+# Build client (browser)
 RUN ng build projet_pfe_nawress_jebali --configuration production
 
 # Build server (Angular Universal)
@@ -30,12 +32,17 @@ FROM node:20-bullseye
 
 WORKDIR /app
 
+# Copy build artifacts from Stage 1
 COPY --from=build /app/dist/projet_pfe_nawress_jebali /app/dist/projet_pfe_nawress_jebali
 COPY --from=build /app/dist/projet_pfe_nawress_jebali-server /app/dist/projet_pfe_nawress_jebali-server
+
+# Copy package.json for runtime dependencies
 COPY package*.json ./
 
+# Install only production dependencies
 RUN npm install --legacy-peer-deps --omit=dev
 
 EXPOSE 4000
 
+# Start Angular Universal server
 CMD ["node", "dist/projet_pfe_nawress_jebali-server/main.js"]
