@@ -16,6 +16,9 @@ RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebal
 # Upgrade pip
 RUN pip install --upgrade pip
 
+# PyTorch vision/audio
+RUN pip install --no-cache-dir torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
 # Core dependencies
 RUN pip install --no-cache-dir \
     flask flask-cors gunicorn requests beautifulsoup4 python-dotenv werkzeug joblib
