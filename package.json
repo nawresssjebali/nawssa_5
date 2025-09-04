@@ -1,5 +1,13 @@
 {
-  "version": "1",
+  "name": "projet-pfe-nawress-jebali",
+  "version": "1.0.0",
+  "scripts": {
+     "start": "node Backend/server.js",
+    "build": "ng build --configuration=production",
+    "serve": "ng serve",
+    "build:ssr": "ng run projet-pfe-nawress-jebali:server:production",
+    "serve:ssr": "node dist/projet-pfe-nawress-jebali/server/main.js"
+  },
   "projects": {
     "projet-pfe-nawress-jebali": {
       "projectType": "application",
@@ -101,3 +109,4 @@
     "uuid": "^11.1.0"
   }
 }
+

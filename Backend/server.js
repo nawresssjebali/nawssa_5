@@ -11,19 +11,26 @@ const crypto = require("crypto"); // For generating secure tokens
 const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
 const moment = require('moment-timezone');
-const { Server } = require('socket.io');
-
 const http = require('http');
+const { Server } = require('socket.io'); // <-- Import Socket.IO here
+
+// Create Express app
 const app = express();
 
+// Create HTTP server
+const server = http.createServer(app);
+
+// ✅ Socket.IO setup using the server
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:4200",
+    methods: ["GET", "POST"],
+  },
+});
+
+// Log server time
 const serverTime = moment().tz('Africa/Tunis').format();
 console.log('Server time (Tunisia):', serverTime);
-
-const server = http.createServer(app);
-fs.writeFileSync(path.join(__dirname, "ECGS/test.txt"), "Hello World");
-
-
-
 
 // 🔧 Define CORS options
 const corsOptions = {
@@ -34,20 +41,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-// ✅ Fix: autoriser un body JSON plus grand
+// ✅ Allow large JSON bodies
 app.use(express.json({ limit: '50mb' }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-
-
-// ✅ Socket.IO setup
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:4200",
-    methods: ["GET", "POST"],
-  },
-});
-
 
 // Ensure the 'uploads' directory exists
 const uploadDir = path.join(__dirname, 'uploads');
@@ -59,11 +56,13 @@ if (!fs.existsSync(uploadDir)) {
 app.use('/uploads', express.static(uploadDir));
 
 // Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/mydatabase", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => console.log("MongoDB connected"))
-  .catch(err => console.error("MongoDB connection error:", err));
+const mongoUri = process.env.MONGO_URL || 'mongodb://mongodb:27017/mydatabase';
+
+
+mongoose.connect(mongoUri)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => console.error("❌ MongoDB connection error:", err));
+
 
 // Define Storage for File Uploads
 const storage = multer.diskStorage({
@@ -356,6 +355,7 @@ app.post("/admin/force-logout/:userId", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // API Route to Send Password Reset Link (Email)
 app.post("/send-email", async (req, res) => {
@@ -4694,8 +4694,8 @@ app.use((req, res, next) => {
   console.log('Unhandled request to:', req.originalUrl);
   res.status(404).send('Not found'); // Optional: send 404 response
 });
-
+// ✅ Start the server
 const PORT = 5000;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });

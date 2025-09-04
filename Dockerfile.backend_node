@@ -1,0 +1,28 @@
+# Use a smaller, Alpine-based Node.js 18.19.1 image
+FROM node:18.19.1-alpine
+
+# Set the working directory inside the container
+WORKDIR /usr/src/app
+
+# Copy package files for dependency installation
+COPY package*.json ./
+
+# Install only production dependencies to reduce size
+RUN npm install --production --legacy-peer-deps
+
+# Copy the rest of your source code
+COPY . .
+
+# Copy wait-for-it script
+COPY wait-for-it.sh /usr/src/app/wait-for-it.sh
+RUN chmod +x /usr/src/app/wait-for-it.sh
+
+# Define production environment variable
+ENV NODE_ENV=production
+
+# Expose your app's port
+EXPOSE 5000
+
+# Start the app using wait-for-it to ensure MongoDB is ready
+CMD ["./wait-for-it.sh", "mongodb:27017", "--", "npm", "start"]
+
