@@ -56,7 +56,8 @@ if (!fs.existsSync(uploadDir)) {
 app.use('/uploads', express.static(uploadDir));
 
 // Connect to MongoDB
-const mongoUri = process.env.MONGO_URL || 'mongodb://localhost:27017/mydatabase';
+const mongoUri = process.env.MONGO_URL || 'mongodb://mongodb:27017/mydatabase';
+
 
 mongoose.connect(mongoUri)
   .then(() => console.log("✅ MongoDB connected"))
