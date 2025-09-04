@@ -11,8 +11,8 @@ services:
     volumes:
       - mongo-data:/data/db
     healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 27017 || exit 1"]
-      interval: 5s
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.adminCommand(\"ping\").ok' || exit 1"]
+      interval: 10s
       timeout: 5s
       retries: 5
 
@@ -57,3 +57,4 @@ services:
 # Named volume for MongoDB persistence
 volumes:
   mongo-data:
+
