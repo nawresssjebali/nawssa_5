@@ -1,11 +1,11 @@
-// main.server.ts
-import { bootstrapApplication } from '@angular/platform-browser';
-import { AppComponent } from './app/app.component';
-import { config } from './app/app.config.server';
+// src/main.server.ts
+import { enableProdMode } from '@angular/core';
+import { environment } from './environments/environment';
+import { platformServer, renderModule } from '@angular/platform-server';
+import { AppServerModule } from './app/app.server.module';
 
-// Import the Express server to start it
-import './server';
+if (environment.production) {
+  enableProdMode();
+}
 
-const bootstrap = () => bootstrapApplication(AppComponent, config);
-
-export default bootstrap;
+export { AppServerModule };
