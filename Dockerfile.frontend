@@ -7,6 +7,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
+# Explicitly install RxJS to fix missing module errors
+RUN npm install rxjs --legacy-peer-deps
+
 # Install Angular CLI
 RUN npm install -g @angular/cli@19.2.4
 
