@@ -3,7 +3,8 @@ FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
 WORKDIR /app
 
 # System dependencies
-RUN apt-get update && apt-get install -y git libglib2.0-0 libsm6 libxrender1 libxext6 libgl1 \
+RUN apt-get update && apt-get install -y \
+    git libglib2.0-0 libsm6 libxrender1 libxext6 libgl1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Clone repo
@@ -12,29 +13,13 @@ RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebal
     && sh -c 'mv /tmp/nawssa_5/Backend/.* /app/ 2>/dev/null || true' \
     && rm -rf /tmp/nawssa_5
 
-# Upgrade pip
-RUN pip install --upgrade pip
+# Copy requirements file from Backend
+COPY Backend/requirements.txt /app/requirements.txt
 
-# PyTorch vision/audio
-RUN pip install --no-cache-dir torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
-# Core dependencies
-RUN pip install --no-cache-dir \
-    flask flask-cors gunicorn requests beautifulsoup4 python-dotenv werkzeug joblib
-
-# Scientific / image / ML libraries (ensure compatible numpy + tensorflow)
-RUN pip install --no-cache-dir \
-    "numpy<2" "tensorflow<2.14" pandas scikit-learn matplotlib scikit-image opencv-python
-
-
-# Optional / DL libraries
-RUN pip install --no-cache-dir ultralytics ipython
-
-# NLP / LangChain / Evaluation
-RUN pip install --no-cache-dir \
-    langdetect langchain langchain_core chromadb llama-index ragas datasets evaluate unstructured openai
+# Upgrade pip and install all Python dependencies
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 3000
 
 CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
-
