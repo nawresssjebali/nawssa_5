@@ -24,7 +24,8 @@ RUN pip install --no-cache-dir \
 
 # Scientific / image / ML libraries (ensure compatible numpy + tensorflow)
 RUN pip install --no-cache-dir \
-    "numpy<2" pandas scikit-learn matplotlib scikit-image opencv-python tensorflow<2.14
+    "numpy<2" "tensorflow<2.14" pandas scikit-learn matplotlib scikit-image opencv-python
+
 
 # Optional / DL libraries
 RUN pip install --no-cache-dir ultralytics ipython
