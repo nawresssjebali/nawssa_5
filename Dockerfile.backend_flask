@@ -23,9 +23,9 @@ RUN pip install --no-cache-dir torchvision torchaudio --index-url https://downlo
 RUN pip install --no-cache-dir \
     flask flask-cors gunicorn requests beautifulsoup4 python-dotenv werkzeug joblib
 
-# Scientific / image libraries (pin numpy < 2 to avoid PyTorch issues)
+# Scientific / image libraries
 RUN pip install --no-cache-dir \
-    "numpy<2" pandas scikit-learn matplotlib scikit-image opencv-python
+    numpy pandas scikit-learn matplotlib scikit-image opencv-python
 
 # Optional: smaller DL libraries or updates
 RUN pip install --no-cache-dir \
@@ -38,4 +38,3 @@ RUN pip install --no-cache-dir \
 EXPOSE 3000
 
 CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
-
