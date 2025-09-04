@@ -1,9 +1,8 @@
-# Base image with PyTorch + CUDA runtime
 FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
 
 WORKDIR /app
 
-# Install system dependencies (keep lightweight)
+# System dependencies
 RUN apt-get update && apt-get install -y git libglib2.0-0 libsm6 libxrender1 libxext6 libgl1 \
     && rm -rf /var/lib/apt/lists/*
 
@@ -23,13 +22,12 @@ RUN pip install --no-cache-dir torchvision torchaudio --index-url https://downlo
 RUN pip install --no-cache-dir \
     flask flask-cors gunicorn requests beautifulsoup4 python-dotenv werkzeug joblib
 
-# Scientific / image libraries
+# Scientific / image / ML libraries (ensure compatible numpy + tensorflow)
 RUN pip install --no-cache-dir \
-    numpy pandas scikit-learn matplotlib scikit-image opencv-python
+    "numpy<2" pandas scikit-learn matplotlib scikit-image opencv-python tensorflow<2.14
 
-# Optional: smaller DL libraries or updates
-RUN pip install --no-cache-dir \
-    ultralytics ipython
+# Optional / DL libraries
+RUN pip install --no-cache-dir ultralytics ipython
 
 # NLP / LangChain / Evaluation
 RUN pip install --no-cache-dir \
@@ -38,3 +36,4 @@ RUN pip install --no-cache-dir \
 EXPOSE 3000
 
 CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
+
