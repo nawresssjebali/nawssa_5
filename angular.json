@@ -11,42 +11,57 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/projet_pfe_nawress_jebali",
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "browser": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              { "glob": "**/*", "input": "src/assets", "output": "assets" }
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              }
             ],
             "styles": [
               "src/styles.css",
-              "node_modules/ngx-toastr/toastr.css"
+               "node_modules/ngx-toastr/toastr.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "server": "src/main.server.ts",
+            "outputMode": "server",
+            "ssr": {
+              "entry": "src/server.ts"
+            }
           },
           "configurations": {
-            "production": { "outputHashing": "all" },
-            "development": { "optimization": false, "sourceMap": true }
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
           },
           "defaultConfiguration": "production"
         },
-"server": {
-  "builder": "@angular-devkit/build-angular:server",
-  "options": {
-    "outputPath": "dist/projet_pfe_nawress_jebali-server",
-    "main": "src/main.server.ts",
-    "tsConfig": "tsconfig.server.json"
-  },
-  "configurations": {
-    "production": { "optimization": true, "sourceMap": false },
-    "development": { "optimization": false, "sourceMap": true }
-  },
-  "defaultConfiguration": "production"
-},
-
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
@@ -65,21 +80,21 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
-              { "glob": "**/*", "input": "src/assets" }
+              {
+                "glob": "**/*",
+                "input": "src/assets"
+              }
             ],
-            "styles": ["src/styles.css"],
+            "styles": [
+              "src/styles.css"
+            ],
             "scripts": []
-          }
-        },
-        "prerender": {
-          "builder": "@nguniversal/builders:prerender",
-          "options": {
-            "browserTarget": "projet_pfe_nawress_jebali:build:production",
-            "serverTarget": "projet_pfe_nawress_jebali:server:production",
-            "routes": ["/", "/login", "/dashboard"]
           }
         }
       }
