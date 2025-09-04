@@ -13,37 +13,50 @@ RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebal
     && sh -c 'mv /tmp/nawssa_5/Backend/.* /app/ 2>/dev/null || true' \
     && rm -rf /tmp/nawssa_5
 
-RUN pip install --upgrade pip \
-    && pip install --no-cache-dir \
-       flask \
-       flask-cors \
-       gunicorn \
-       requests \
-       opencv-python \
-       joblib \
-       numpy \
-       pandas \
-       scikit-learn \
-       matplotlib \
-       beautifulsoup4 \
-       openai \
-       torch \
-       torchvision \
-       ultralytics \
-       tensorflow \
-       ipython \
-       scikit-image \
-       langdetect \
-       langchain \
-       langchain_core \
-       chromadb \
-       llama-index \
-       ragas \
-       datasets \
-       evaluate \
-       unstructured \
-       python-dotenv \
-       werkzeug
+# Upgrade pip first
+RUN pip install --upgrade pip
+
+# Core Flask dependencies
+RUN pip install --no-cache-dir \
+    flask \
+    flask-cors \
+    gunicorn \
+    requests \
+    beautifulsoup4 \
+    python-dotenv \
+    werkzeug \
+    joblib
+
+# Scientific and image processing libraries
+RUN pip install --no-cache-dir \
+    numpy \
+    pandas \
+    scikit-learn \
+    matplotlib \
+    scikit-image \
+    opencv-python
+
+# ML / DL frameworks
+RUN pip install --no-cache-dir \
+    torch \
+    torchvision \
+    tensorflow \
+    ultralytics \
+    ipython
+
+# NLP / LangChain / Evaluation
+RUN pip install --no-cache-dir \
+    langdetect \
+    langchain \
+    langchain_core \
+    chromadb \
+    llama-index \
+    ragas \
+    datasets \
+    evaluate \
+    unstructured \
+    openai
+
 
 # Expose port
 EXPOSE 3000
