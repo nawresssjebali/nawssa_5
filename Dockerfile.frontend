@@ -25,7 +25,10 @@ RUN ng build projet_pfe_nawress_jebali --configuration production
 # Stage 2: Serve the Angular app with nginx
 FROM nginx:alpine
 
-# Copy built app to nginx html folder
+# Ensure html folder exists
+RUN mkdir -p /usr/share/nginx/html
+
+# Copy built Angular app
 COPY --from=build /app/dist/projet_pfe_nawress_jebali /usr/share/nginx/html
 
 # Copy custom nginx config if needed
@@ -34,4 +37,3 @@ COPY --from=build /app/dist/projet_pfe_nawress_jebali /usr/share/nginx/html
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
-
