@@ -16,9 +16,6 @@ RUN git clone -b main --single-branch --depth 1 https://github.com/nawresssjebal
 # Upgrade pip
 RUN pip install --upgrade pip
 
-# Pin numpy <2 to avoid PyTorch issues
-RUN pip install --no-cache-dir "numpy<2"
-
 # PyTorch vision/audio
 RUN pip install --no-cache-dir torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
@@ -26,9 +23,9 @@ RUN pip install --no-cache-dir torchvision torchaudio --index-url https://downlo
 RUN pip install --no-cache-dir \
     flask flask-cors gunicorn requests beautifulsoup4 python-dotenv werkzeug joblib
 
-# Scientific / image libraries (numpy already pinned)
+# Scientific / image libraries (pin numpy < 2 to avoid PyTorch issues)
 RUN pip install --no-cache-dir \
-    pandas scikit-learn matplotlib scikit-image opencv-python
+    "numpy<2" pandas scikit-learn matplotlib scikit-image opencv-python
 
 # Optional: smaller DL libraries or updates
 RUN pip install --no-cache-dir \
@@ -41,3 +38,4 @@ RUN pip install --no-cache-dir \
 EXPOSE 3000
 
 CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
+
