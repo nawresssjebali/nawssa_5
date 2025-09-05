@@ -26,12 +26,12 @@ RUN if [ ! -d /app/dist/projet_pfe_nawress_jebali ]; then echo "Build failed!"; 
 # Stage 2: Serve the Angular app with Nginx
 FROM nginx:alpine
 
-# Ensure html folder exists
-RUN mkdir -p /usr/share/nginx/html
+# Copy built app contents directly (no trailing dot)
+COPY --from=build /app/dist/projet_pfe_nawress_jebali /usr/share/nginx/html
 
-# Copy built app contents
-COPY --from=build /app/dist/projet_pfe_nawress_jebali/. /usr/share/nginx/html/
-
+# Expose port 80
 EXPOSE 80
 
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
